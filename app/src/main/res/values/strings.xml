@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Galaxy-Net</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="task_category">
+        <item>برمجه</item>
+        <item>تركيب</item>
+        <item>برمجه و تركيب</item>
+        <item>صيانه</item>
+        <item>توزيع</item>
+        <item>تخطيط</item>
+        <item>اخري</item>
+    </string-array>
+</resources>

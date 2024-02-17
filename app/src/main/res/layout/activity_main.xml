@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="@color/white"
+    >
+
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph = "@navigation/my_nav"
+        app:defaultNavHost = "true"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        />
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/bottom_appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:backgroundTint="@color/transparent"
+        >
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation_view"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:menu="@menu/bottom_nav_menu"
+            app:itemIconTint="@color/nav_icon_color"
+            android:background="@drawable/bottom_nav_bg"
+            app:itemActiveIndicatorStyle="@style/App.Custom.Indicator"
+            android:outlineSpotShadowColor="@color/white"
+            android:layout_marginBottom="6dp"
+            android:layout_marginHorizontal="10dp"
+            app:itemPaddingBottom="5dp"
+            app:itemTextColor="@color/white"
+            />
+
+    </com.google.android.material.bottomappbar.BottomAppBar>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_task_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_floating_button"
+        android:src="@drawable/ic_add"
+        app:layout_anchor="@id/bottom_appBar"
+        app:shapeAppearanceOverlay="@style/fab_rounded"
+        android:layout_marginBottom="70dp"
+        android:backgroundTint="#F07039"
+        />
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
