@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.galaxy.galaxynet.LoginFragment"
+        android:name="com.galaxy.galaxynet.ui.auth.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -20,27 +20,36 @@
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.galaxy.galaxynet.tabs.HomeFragment"
+        android:name="com.galaxy.galaxynet.ui.tabs.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/myTasksFragment"
-        android:name="com.galaxy.galaxynet.tabs.MyTasksFragment"
+        android:name="com.galaxy.galaxynet.ui.tabs.MyTasksFragment"
         android:label="fragment_my_tasks"
         tools:layout="@layout/fragment_my_tasks" />
     <fragment
         android:id="@+id/ipListFragment"
-        android:name="com.galaxy.galaxynet.tabs.IpListFragment"
+        android:name="com.galaxy.galaxynet.ui.tabs.IpListFragment"
         android:label="fragment_ip_list"
         tools:layout="@layout/fragment_ip_list" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.galaxy.galaxynet.tabs.ProfileFragment"
+        android:name="com.galaxy.galaxynet.ui.tabs.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/managerProfileFragment"
-        android:name="com.galaxy.galaxynet.ManagerProfileFragment"
+        android:name="com.galaxy.galaxynet.ui.tabs.ManagerProfileFragment"
         android:label="fragment_manager_profile"
-        tools:layout="@layout/fragment_manager_profile" />
+        tools:layout="@layout/fragment_manager_profile">
+        <action
+            android:id="@+id/action_managerProfileFragment_to_addAccountFragment"
+            app:destination="@id/addAccountFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addAccountFragment"
+        android:name="com.galaxy.galaxynet.ui.AddAccountFragment"
+        android:label="fragment_add_account"
+        tools:layout="@layout/fragment_add_account" />
 </navigation>

@@ -1,23 +1,24 @@
-package com.galaxy.galaxynet
+package com.galaxy.galaxynet.ui.auth
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.galaxy.galaxynet.R
 import com.galaxy.galaxynet.databinding.FragmentLoginBinding
-import kotlinx.coroutines.Dispatchers
+import com.galaxy.util.UiState
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
-    val viewModel: AuthViewModel by viewModels()
+    val viewModel: AuthViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,24 +39,38 @@ class LoginFragment : Fragment() {
         binding.vm = viewModel
         binding.lifecycleOwner = this
         binding.loginBtn.setOnClickListener {
-            lifecycleScope.launch{
+            lifecycleScope.launch {
                 viewModel.logIn()
-                withContext(Dispatchers.Main){
-                    binding.loginBtn.isEnabled = false
-                }
             }
+            binding.loginBtn.isEnabled = false
         }
 
         observeData()
     }
 
     private fun observeData() {
-        viewModel.messageLiveData.observe(viewLifecycleOwner){
-            Toast.makeText(activity , it , Toast.LENGTH_LONG).show()
-            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+
+
+        viewModel.state.observe(viewLifecycleOwner) {
+            handleState(it)
         }
     }
 
+    private fun handleState(state: UiState) {
+        when (state) {
+            UiState.ERROR -> {
+                Toast.makeText(activity, "حدث خطا حاول مره اخري ", Toast.LENGTH_LONG).show()
+                binding.loginBtn.isEnabled = true
+            }
+
+            UiState.SUCCESS -> {
+                Toast.makeText(activity, "تم تسجيل الدخول بنجاح", Toast.LENGTH_LONG).show()
+                findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+            }
+
+            else -> {}
+        }
+    }
 
 
 }

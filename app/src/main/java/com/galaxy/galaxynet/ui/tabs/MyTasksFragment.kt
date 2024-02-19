@@ -1,13 +1,14 @@
-package com.galaxy.galaxynet.tabs
+package com.galaxy.galaxynet.ui.tabs
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.galaxy.galaxynet.R
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MyTasksFragment : Fragment() {
 
 

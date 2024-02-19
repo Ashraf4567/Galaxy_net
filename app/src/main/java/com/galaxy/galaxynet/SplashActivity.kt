@@ -1,11 +1,13 @@
 package com.galaxy.galaxynet
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import androidx.appcompat.app.AppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -13,7 +15,7 @@ class SplashActivity : AppCompatActivity() {
 
         Handler(Looper.getMainLooper())
             .postDelayed({
-                   startMainActivity()
+                startMainActivity()
             },2000)
     }
 
