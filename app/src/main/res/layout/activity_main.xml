@@ -55,7 +55,7 @@
         app:layout_anchor="@id/bottom_appBar"
         app:shapeAppearanceOverlay="@style/fab_rounded"
         android:layout_marginBottom="70dp"
-        android:backgroundTint="#F07039"
+        android:backgroundTint="#FEB54C"
         />
 
 

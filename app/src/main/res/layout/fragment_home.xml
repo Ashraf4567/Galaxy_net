@@ -8,7 +8,7 @@
     android:padding="16dp"
     android:layout_marginBottom="62dp"
     android:layoutDirection="rtl"
-    tools:context=".tabs.HomeFragment">
+    tools:context=".ui.tabs.HomeFragment">
 
     <TextView
         android:id="@+id/greeting_text"

@@ -9,13 +9,13 @@
 
         <variable
             name="vm"
-            type="com.galaxy.galaxynet.AuthViewModel" />
+            type="com.galaxy.galaxynet.ui.auth.AuthViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".LoginFragment"
+        tools:context=".ui.auth.LoginFragment"
         android:padding="8dp"
         android:background="@color/white">
 

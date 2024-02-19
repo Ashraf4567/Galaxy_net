@@ -20,6 +20,6 @@ enum class TasksCategory(val category: String){
 
 enum class TaskAcceptanceStatus(val state: String) {
     PENDING("معلقه"),
-    ACCEPTED("قيد التنفيذ"),
-    REJECTED("مكتمله")
+    ACCEPTED("مقبوله"),
+    REJECTED("مرفوضه")
 }
