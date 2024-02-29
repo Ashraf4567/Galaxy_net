@@ -8,16 +8,15 @@
     android:padding="16dp"
     android:layout_marginBottom="62dp"
     android:layoutDirection="rtl"
-    tools:context=".ui.tabs.HomeFragment">
+    tools:context=".ui.tabs.home.HomeFragment">
 
     <TextView
         android:id="@+id/greeting_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/almarai_font"
-        android:text="مرحباً, احمد"
         android:textColor="@color/black"
-        android:textSize="30sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -29,7 +28,7 @@
         android:fontFamily="@font/almarai_font"
         android:text="لننهي مهام اليوم!"
         android:textColor="@color/gray"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/greeting_text" />

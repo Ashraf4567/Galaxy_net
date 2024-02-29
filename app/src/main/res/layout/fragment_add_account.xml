@@ -18,7 +18,7 @@
         android:layout_height="match_parent"
         android:layoutDirection="rtl"
         android:padding="8dp"
-        tools:context=".ui.AddAccountFragment">
+        tools:context=".ui.controlPanel.AddAccountFragment">
 
 
         <TextView

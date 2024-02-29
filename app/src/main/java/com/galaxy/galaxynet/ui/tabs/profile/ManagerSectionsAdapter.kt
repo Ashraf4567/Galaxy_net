@@ -1,4 +1,4 @@
-package com.galaxy.galaxynet.ui.tabs
+package com.galaxy.galaxynet.ui.tabs.profile
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -30,7 +30,7 @@ class ManagerSectionsAdapter(var sectionsList: List<String>) :
         val itemSectionName = sectionsList[position]
         holder.bind(itemSectionName)
         onSectionClickListener.let {
-            holder.item.root.setOnClickListener {
+            holder.item.sectionName.setOnClickListener {
                 onSectionClickListener?.onSectionClick(itemSectionName)
             }
         }

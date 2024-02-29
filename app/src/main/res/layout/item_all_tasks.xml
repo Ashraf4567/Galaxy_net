@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="task"
+            type="com.galaxy.galaxynet.model.Task" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layoutDirection="rtl"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="5dp"
+        app:contentPadding="5dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/task_title"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{task.title}"
+                android:textColor="@color/black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/task_time"
+                tools:text="تركيب شبكه" />
+
+            <TextView
+                android:id="@+id/task_time"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{task.dateTime}"
+                android:textDirection="ltr"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="5:21" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ic_delete"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:backgroundTint="@color/transparent"
+                app:icon="@drawable/ic_delete"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="22dp"
+                app:iconTintMode="multiply"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ic_edit"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:backgroundTint="@color/transparent"
+                app:icon="@drawable/ic_edit"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="22dp"
+                app:iconTintMode="multiply"
+                app:layout_constraintEnd_toStartOf="@id/ic_delete"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/task_description"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{task.description}"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/task_title"
+                tools:text="وصف المهمه سواء تركيب او غيرها" />
+
+            <TextView
+                android:id="@+id/task_points"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:text="@{task.points+` نقاط`}"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toTopOf="@id/task_state"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/task_description"
+                tools:text="النقاط 5" />
+
+            <TextView
+                android:id="@+id/task_category"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{`تصنيف: `+task.taskCategory}"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/task_description"
+                tools:text="التصنيف تركيب" />
+
+            <TextView
+                android:id="@+id/task_creator"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{`بواسطه: `+task.creatorName}"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/task_category"
+                tools:text="بواسطة احمد علي" />
+
+            <TextView
+                android:id="@+id/task_worker_name"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{`يعمل عليها: `+task.workerName}"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/task_creator"
+                tools:text="بواسطة احمد علي" />
+
+            <TextView
+                android:id="@+id/task_state"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/completed_task_bg"
+                android:padding="4dp"
+                android:text="@{task.taskCompletionState}"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@id/take_task_btn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/task_points"
+                tools:text="جديده" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/take_task_btn"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:fontFamily="@font/almarai_font"
+                android:text="سحب المهمه"
+                android:textColor="@color/white"
+                app:backgroundTint="#E14680FD"
+                app:cornerRadius="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/task_worker_name" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

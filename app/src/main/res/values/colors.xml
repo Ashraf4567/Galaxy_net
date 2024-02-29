@@ -5,4 +5,10 @@
     <color name="gray">#4D5076</color>
     <color name="colorPrimary">#4680FD</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="completed_task_color">#9BFF99</color>
+    <color name="inProgress_task_color">#FFE74D</color>
+    <color name="new_task_color">#864680FD</color>
+    <color name="Primary_Container">#dae2ff</color>
+    <color name="Secondary">#395ba9</color>
+    <color name="red">#FA2020</color>
 </resources>

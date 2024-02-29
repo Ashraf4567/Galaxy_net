@@ -20,11 +20,6 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     val viewModel: AuthViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,6 +41,7 @@ class LoginFragment : Fragment() {
         }
 
         observeData()
+
     }
 
     private fun observeData() {
@@ -54,18 +50,29 @@ class LoginFragment : Fragment() {
         viewModel.state.observe(viewLifecycleOwner) {
             handleState(it)
         }
+        viewModel.emailError.observe(viewLifecycleOwner) {
+            binding.loginBtn.isEnabled = true
+        }
+        viewModel.passwordError.observe(viewLifecycleOwner) {
+            binding.loginBtn.isEnabled = true
+        }
     }
 
     private fun handleState(state: UiState) {
         when (state) {
             UiState.ERROR -> {
-                Toast.makeText(activity, "حدث خطا حاول مره اخري ", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireActivity(), "حدث خطا حاول مره اخري ", Toast.LENGTH_LONG)
+                    .show()
                 binding.loginBtn.isEnabled = true
             }
 
             UiState.SUCCESS -> {
-                Toast.makeText(activity, "تم تسجيل الدخول بنجاح", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireActivity(), "تم تسجيل الدخول بنجاح", Toast.LENGTH_SHORT)
+                    .show()
+
                 findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+
+
             }
 
             else -> {}

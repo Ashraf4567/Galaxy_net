@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="task"
+            type="com.galaxy.galaxynet.model.Task" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layoutDirection="rtl"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="5dp"
+        app:contentPadding="5dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/editTask_btn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="12dp"
+                android:background="@color/transparent"
+                android:padding="12dp"
+                app:icon="@drawable/ic_edit"
+                app:iconTintMode="multiply"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/task_title"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{task.title}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="تركيب شبكه" />
+
+            <TextView
+                android:id="@+id/task_description"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{task.description}"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/task_title"
+                tools:text="وصف المهمه سواء تركيب او غيرها" />
+
+            <TextView
+                android:id="@+id/task_points"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="15dp"
+                android:text="@{task.points+` نقاط   `}"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/task_description"
+                tools:text="النقاط 5" />
+
+            <TextView
+                android:id="@+id/task_category"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{`تصنيف: `+task.taskCategory}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/task_description"
+                tools:text="النقاط 5" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/accept_btn"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:backgroundTint="#4CAF50"
+                android:fontFamily="@font/almarai_font"
+                android:text="اضافه"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/task_category" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/delete_btn"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="25dp"
+                android:backgroundTint="#FD1D1D"
+                android:fontFamily="@font/almarai_font"
+                android:text="حذف"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/task_category" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

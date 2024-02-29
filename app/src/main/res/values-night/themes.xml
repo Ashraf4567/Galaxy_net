@@ -1,9 +1,10 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.GalaxyNet" parent="Theme.Material3.Light.NoActionBar">
         <!-- Customize your dark theme here. -->
-         <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
     </style>
+
     <style name="Theme.GalaxyNet" parent="Base.Theme.GalaxyNet" />
 
     <style name="LoginTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
