@@ -3,29 +3,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/my_nav"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.galaxy.galaxynet.ui.auth.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_homeFragment"
             app:destination="@id/homeFragment"
             app:enterAnim="@android:anim/slide_in_left"
             app:exitAnim="@android:anim/slide_out_right"
-            app:popUpTo="@id/loginFragment"
+            app:popUpTo="@id/my_nav"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.galaxy.galaxynet.ui.tabs.HomeFragment"
+        android:name="com.galaxy.galaxynet.ui.tabs.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_allTasksFragment"
+            app:destination="@id/allTasksFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_browseTasksFragment"
+            app:destination="@id/browseTasksFragment" />
+    </fragment>
     <fragment
         android:id="@+id/myTasksFragment"
-        android:name="com.galaxy.galaxynet.ui.tabs.MyTasksFragment"
+        android:name="com.galaxy.galaxynet.ui.tabs.mytasks.MyTasksFragment"
         android:label="fragment_my_tasks"
         tools:layout="@layout/fragment_my_tasks" />
     <fragment
@@ -35,21 +42,97 @@
         tools:layout="@layout/fragment_ip_list" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.galaxy.galaxynet.ui.tabs.ProfileFragment"
+        android:name="com.galaxy.galaxynet.ui.tabs.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/managerProfileFragment"
-        android:name="com.galaxy.galaxynet.ui.tabs.ManagerProfileFragment"
+        android:name="com.galaxy.galaxynet.ui.tabs.profile.ManagerProfileFragment"
         android:label="fragment_manager_profile"
         tools:layout="@layout/fragment_manager_profile">
         <action
             android:id="@+id/action_managerProfileFragment_to_addAccountFragment"
             app:destination="@id/addAccountFragment" />
+        <action
+            android:id="@+id/action_managerProfileFragment_to_tasksRequestsFragment"
+            app:destination="@id/tasksRequestsFragment" />
+        <action
+            android:id="@+id/action_managerProfileFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/my_nav"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_managerProfileFragment_to_employeesListFragment"
+            app:destination="@id/employeesListFragment" />
+        <action
+            android:id="@+id/action_managerProfileFragment_to_addDeviceTypeFragment"
+            app:destination="@id/addDeviceTypeFragment" />
     </fragment>
     <fragment
         android:id="@+id/addAccountFragment"
-        android:name="com.galaxy.galaxynet.ui.AddAccountFragment"
+        android:name="com.galaxy.galaxynet.ui.controlPanel.AddAccountFragment"
         android:label="fragment_add_account"
         tools:layout="@layout/fragment_add_account" />
+    <fragment
+        android:id="@+id/tasksRequestsFragment"
+        android:name="com.galaxy.galaxynet.ui.tasksRequests.TasksRequestsFragment"
+        android:label="fragment_tasks_requests"
+        tools:layout="@layout/fragment_tasks_requests">
+        <action
+            android:id="@+id/action_tasksRequestsFragment_to_editTaskFragment"
+            app:destination="@id/editTaskFragment">
+            <argument
+                android:name="task"
+                app:argType="com.galaxy.galaxynet.model.Task" />
+
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/editTaskFragment"
+        android:name="com.galaxy.galaxynet.ui.EditTaskFragment"
+        android:label="fragment_edit_task"
+        tools:layout="@layout/fragment_edit_task" />
+    <fragment
+        android:id="@+id/allTasksFragment"
+        android:name="com.galaxy.galaxynet.ui.tabs.home.AllTasksFragment"
+        android:label="fragment_all_tasks"
+        tools:layout="@layout/fragment_all_tasks" />
+    <fragment
+        android:id="@+id/browseTasksFragment"
+        android:name="com.galaxy.galaxynet.ui.tabs.home.BrowseTasksFragment"
+        android:label="fragment_browse_tasks"
+        tools:layout="@layout/fragment_browse_tasks">
+        <argument
+            android:name="satate"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.galaxy.galaxynet.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash">
+        <action
+            android:id="@+id/action_splashFragment_to_loginFragment"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/my_nav"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_splashFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popUpTo="@id/my_nav"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/employeesListFragment"
+        android:name="com.galaxy.galaxynet.ui.controlPanel.EmployeesListFragment"
+        android:label="fragment_employees_list"
+        tools:layout="@layout/fragment_employees_list" />
+    <dialog
+        android:id="@+id/addDeviceTypeFragment"
+        android:name="com.galaxy.galaxynet.ui.controlPanel.AddDeviceTypeFragment"
+        android:label="fragment_add_device_type"
+        tools:layout="@layout/fragment_add_device_type" />
 </navigation>

@@ -8,6 +8,7 @@ import com.galaxy.galaxynet.R
 import com.galaxy.galaxynet.data.local.SessionManager
 import com.galaxy.galaxynet.data.usersRepo.UsersRepository
 import com.galaxy.galaxynet.model.User
+import com.galaxy.util.SingleLiveEvent
 import com.galaxy.util.UiState
 import com.galaxy.util.UserResult
 import com.google.firebase.auth.FirebaseAuth
@@ -27,9 +28,9 @@ class AuthViewModel @Inject constructor(
     val usersRepository: UsersRepository
 ) : ViewModel() {
 
-    val userName = MutableLiveData<String>("Ashraf Mohamed")
-    val email = MutableLiveData<String>("test1@gmail.com")
-    val password = MutableLiveData<String>("test123")
+    val userName = MutableLiveData<String>()
+    val email = MutableLiveData<String>()
+    val password = MutableLiveData<String>()
     val passwordConfirmation = MutableLiveData<String>()
     var userType: String = ""
 
@@ -38,7 +39,17 @@ class AuthViewModel @Inject constructor(
     val userNameError = MutableLiveData<String?>()
     val passwordConfirmationError = MutableLiveData<String?>()
 
-    val state = MutableLiveData<UiState>()
+    val state = SingleLiveEvent<UiState>()
+    val isManager = MutableLiveData<Boolean>()
+
+    fun checkUserType() {
+        if (sessionManager.getUserData()?.type.equals(User.MANAGER)) {
+            isManager.postValue(true)
+        } else {
+            isManager.postValue(false)
+        }
+    }
+
 
     fun onRadioGroupChanged(checkedId: Int) {
         when (checkedId) {
@@ -64,7 +75,7 @@ class AuthViewModel @Inject constructor(
                 if (authResult.user != null) {
                     val user = User(name = "Ashraf", email = email.value, id = authResult.user?.uid)
                     getUserData(user.id)
-                    state.postValue(UiState.SUCCESS)
+
                 } else {
                     state.postValue(UiState.ERROR)
                     // Handle authentication errors:
@@ -122,6 +133,8 @@ class AuthViewModel @Inject constructor(
                         val user = result.user
                         // Cache user data as session manager
                         sessionManager.saveUserData(user)
+                        checkUserType()
+                        state.postValue(UiState.SUCCESS)
                     }
 
                     is UserResult.Failure -> {

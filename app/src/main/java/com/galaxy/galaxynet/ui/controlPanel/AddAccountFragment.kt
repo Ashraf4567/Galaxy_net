@@ -1,4 +1,4 @@
-package com.galaxy.galaxynet.ui
+package com.galaxy.galaxynet.ui.controlPanel
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -42,7 +42,7 @@ class AddAccountFragment : Fragment() {
             lifecycleScope.launch {
                 viewModel.addAccount()
                 withContext(Dispatchers.Main) {
-                    binding.addAccountBtn.isEnabled = false
+
                 }
             }
         }

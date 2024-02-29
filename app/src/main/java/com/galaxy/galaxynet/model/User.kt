@@ -5,7 +5,7 @@ data class User(
     val name: String? = null,
     val email: String? = null,
     val type: String? = null,
-    val points: Int? = null
+    val points: Int? = 0
 ){
     companion object {
         const val MANAGER = "مدير"

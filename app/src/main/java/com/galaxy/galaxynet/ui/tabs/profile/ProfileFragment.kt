@@ -1,4 +1,4 @@
-package com.galaxy.galaxynet.ui.tabs
+package com.galaxy.galaxynet.ui.tabs.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater

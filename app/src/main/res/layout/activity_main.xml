@@ -18,6 +18,7 @@
         app:navGraph = "@navigation/my_nav"
         app:defaultNavHost = "true"
         android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_marginBottom="70dp"
         />
     <com.google.android.material.bottomappbar.BottomAppBar
         android:id="@+id/bottom_appBar"
@@ -55,7 +56,7 @@
         app:layout_anchor="@id/bottom_appBar"
         app:shapeAppearanceOverlay="@style/fab_rounded"
         android:layout_marginBottom="70dp"
-        android:backgroundTint="#FEB54C"
+        android:backgroundTint="@color/Secondary"
         />
 
 

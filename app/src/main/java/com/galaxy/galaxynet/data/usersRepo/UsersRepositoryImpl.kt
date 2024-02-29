@@ -5,6 +5,7 @@ import android.util.Log
 import com.galaxy.galaxynet.model.User
 import com.galaxy.util.UserResult
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -32,5 +33,19 @@ class UsersRepositoryImpl @Inject constructor(
             UserResult.Failure(exception)
         }
     }
+
+    override suspend fun getAllUsers(): List<User> {
+        try {
+            val querySnapshot = usersCollection.get().await()
+            return querySnapshot.toObjects(User::class.java)
+        } catch (e: FirebaseFirestoreException) {
+            Log.e("getAllUsers", "FirebaseFirestoreException: ${e.message}", e)
+            throw e // Re-throw the exception for proper handling in the ViewModel
+        } catch (e: Exception) {
+            Log.e("getAllUsers", "Unexpected exception: ${e.message}", e)
+            throw Exception("An error occurred while retrieving users.") // Provide a user-friendly message
+        }
+    }
+
 
 }
