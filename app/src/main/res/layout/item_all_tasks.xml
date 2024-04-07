@@ -13,15 +13,19 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
         android:layoutDirection="rtl"
         app:cardCornerRadius="20dp"
         app:cardElevation="5dp"
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginBottom="18dp"
+        android:backgroundTint="@color/white_gray"
         app:contentPadding="5dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+
+            >
 
             <TextView
                 android:id="@+id/task_title"
@@ -29,10 +33,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{task.title}"
-                android:textColor="@color/black"
+                android:backgroundTint="@color/white"
+                android:textColor="@color/colorPrimary"
                 app:layout_constraintStart_toStartOf="parent"
+                android:textSize="15sp"
                 app:layout_constraintTop_toBottomOf="@id/task_time"
                 tools:text="تركيب شبكه" />
+
+            <View
+                android:id="@+id/task_title_guideline"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimary"
+                app:layout_constraintTop_toBottomOf="@id/task_title" />
 
             <TextView
                 android:id="@+id/task_time"
@@ -41,7 +56,10 @@
                 android:layout_height="wrap_content"
                 android:text="@{task.dateTime}"
                 android:textDirection="ltr"
-                android:textSize="13sp"
+                android:background="@color/gray"
+                android:padding="2sp"
+                android:textColor="@color/white"
+                android:textSize="9sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="5:21" />
@@ -50,7 +68,7 @@
                 android:id="@+id/ic_delete"
                 android:layout_width="40dp"
                 android:layout_height="30dp"
-                android:backgroundTint="@color/transparent"
+                android:backgroundTint="@color/white"
                 app:icon="@drawable/ic_delete"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
@@ -79,9 +97,24 @@
                 android:layout_height="wrap_content"
                 android:text="@{task.description}"
                 android:textSize="13sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/task_title"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="6dp"
+                android:paddingEnd="4dp"
+                app:layout_constraintStart_toEndOf="@id/task_description_guideline"
+                app:layout_constraintTop_toBottomOf="@id/task_title_guideline"
                 tools:text="وصف المهمه سواء تركيب او غيرها" />
+
+            <View
+                android:id="@+id/task_description_guideline"
+                android:layout_width="8dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="5dp"
+                android:layout_marginVertical="12dp"
+                android:background="@drawable/description_guideline_bg"
+                app:layout_constraintBottom_toBottomOf="@id/task_description"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/task_description"
+                app:layout_constraintTop_toTopOf="@id/task_description" />
 
             <TextView
                 android:id="@+id/task_points"
@@ -91,6 +124,7 @@
                 android:layout_marginEnd="15dp"
                 android:text="@{task.points+` نقاط`}"
                 android:textSize="13sp"
+                android:layout_marginTop="9dp"
                 app:layout_constraintBottom_toTopOf="@id/task_state"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/task_description"

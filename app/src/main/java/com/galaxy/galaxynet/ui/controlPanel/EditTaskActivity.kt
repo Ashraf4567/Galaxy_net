@@ -45,8 +45,6 @@ class EditTaskActivity : AppCompatActivity() {
 
             if (categoryPosition >= 0) {
                 binding?.categorySpinner?.setSelection(categoryPosition)
-                // Alternative: (if using data binding)
-                // vm.taskCategory = result.taskCategory
             }
         }
     }
@@ -54,6 +52,9 @@ class EditTaskActivity : AppCompatActivity() {
     private fun initViews() {
         binding.vm = viewModel
         binding.lifecycleOwner = this
+        binding.cancelTaskBtn.setOnClickListener {
+            finish()
+        }
         binding.saveTaskBtn.setOnClickListener {
             viewModel.updateTask(taskId)
         }

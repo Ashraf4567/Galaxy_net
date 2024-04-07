@@ -249,7 +249,9 @@ class TasksRepositoryImpl @Inject constructor(
 
             val updatedPoints = user.points!!.toInt() + (task.points?.toInt()
                 ?: 0)  // Handle potential nullity for points
+            val updatedNumberOfCompletedTasks = user.numberOfCompletedTasks.toInt() + 1
             userRef.update("points", updatedPoints).await()
+            userRef.update("numberOfCompletedTasks", updatedNumberOfCompletedTasks).await()
 
             TransactionResult.Success()
         } catch (e: Exception) {
@@ -259,7 +261,6 @@ class TasksRepositoryImpl @Inject constructor(
 
     override suspend fun getTaskById(id: String): Task {
         try {
-            // Query to find the task with the matching ID
             Log.e("test id", id)
             val querySnapshot = firestore.collection(Task.COLLECTION_NAME)
                 .whereEqualTo("id", id)

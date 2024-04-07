@@ -5,7 +5,6 @@ import android.app.NotificationManager
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -19,15 +18,17 @@ import com.galaxy.galaxynet.ui.AddTaskFragment
 import com.galaxy.galaxynet.ui.auth.AuthViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.firestoreSettings
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
-
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: AuthViewModel by viewModels()
-
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { isGranted: Boolean ->
@@ -43,12 +44,24 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel.checkUserType()
+        FirebaseMessaging.getInstance().subscribeToTopic(com.galaxy.util.Constants.TOPIC)
 
+        Firebase.firestore.firestoreSettings = firestoreSettings {
+            isPersistenceEnabled = true
+            setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED)
+        }
+
+        Firebase.firestore.persistentCacheIndexManager?.apply {
+            // Indexing is disabled by default
+            enableIndexAutoCreation()
+        } ?: println("indexManager is null")
+
+
+        viewModel.checkUserType()
         askNotificationPermission()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                "YOUR_CHANNEL_ID",
+                "my_channel",
                 "Channel human readable title", NotificationManager.IMPORTANCE_DEFAULT
             )
             getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
@@ -90,17 +103,10 @@ class MainActivity : AppCompatActivity() {
         binding.addTaskBtn.setOnClickListener {
             showAddTaskSheet()
         }
-        createToken()
+
+
     }
 
-    private fun createToken() {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener {
-            if (it.isSuccessful) {
-                val token = it.result
-                Log.d("test token", token)
-            }
-        }
-    }
 
     private fun handleBottomNavigation(itemId: Int, isManager: Boolean) {
         when (itemId) {
@@ -141,7 +147,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun askNotificationPermission() {
-        // This is only necessary for API level >= 33 (TIRAMISU)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
                     this,
@@ -151,10 +156,6 @@ class MainActivity : AppCompatActivity() {
             ) {
                 // FCM SDK (and your app) can post notifications.
             } else if (shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS)) {
-                // TODO: display an educational UI explaining to the user the features that will be enabled
-                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
-                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
-                //       If the user selects "No thanks," allow the user to continue without notifications.
 
             } else {
                 // Directly ask for the permission

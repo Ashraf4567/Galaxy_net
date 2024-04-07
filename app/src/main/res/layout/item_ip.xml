@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="ip"
+            type="com.galaxy.galaxynet.model.Ip" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:layoutDirection="rtl"
+        app:contentPadding="6dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/idValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white_gray"
+                android:text="@{ip.value}"
+                android:textColor="@color/Secondary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="10.10.6.3" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="@color/gray"
+                app:cardCornerRadius="15dp"
+                app:contentPadding="3dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/ipKeyWord"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{ip.keyword}"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    tools:text="سوق اكتوبر" />
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/id_description"
+                style="@style/TextProfileMenu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{ip.description}"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toStartOf="@id/ic_open_in_browser"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/idValue"
+                tools:text="استقبال بث مركز صيانه" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ic_add_ip_in_list"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:backgroundTint="@color/white"
+                app:icon="@drawable/ic_add_ip"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="22dp"
+                app:iconTintMode="multiply"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ic_edit_ip"
+                android:layout_width="50dp"
+                android:layout_height="30dp"
+                android:backgroundTint="@color/white"
+                app:icon="@drawable/ic_edit"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="22dp"
+                app:iconTintMode="multiply"
+                app:layout_constraintEnd_toStartOf="@id/ic_add_ip_in_list"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ic_open_in_browser"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:backgroundTint="@color/white"
+                app:icon="@drawable/ic_browser"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="22dp"
+                app:iconTintMode="multiply"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ic_delete"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:backgroundTint="@color/white"
+                app:icon="@drawable/ic_delete"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="22dp"
+                app:iconTintMode="multiply"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/ic_open_in_browser"
+                app:layout_constraintStart_toStartOf="@id/ic_open_in_browser"
+                app:layout_constraintTop_toBottomOf="@id/ic_open_in_browser" />
+
+            <TextView
+                android:id="@+id/id_deviceType"
+                style="@style/TextProfileMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{`نوع الجهاز: `+ip.deviceType}"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/id_description"
+                tools:text="نوع الجهاز:بيكوستيشنM5" />
+
+            <TextView
+                android:id="@+id/id_ownerName"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{`بواسطه: `+ip.ownerName}"
+                android:textColor="@color/black"
+                android:textSize="10sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/id_deviceType"
+                tools:text="بواسطه: عبدالله العاطفي" />
+
+            <TextView
+                android:id="@+id/id_date"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="@{ip.date}"
+                android:textColor="@color/black"
+                android:textSize="8sp"
+                app:layout_constraintBottom_toBottomOf="@id/id_ownerName"
+                app:layout_constraintStart_toEndOf="@id/id_ownerName"
+                app:layout_constraintTop_toTopOf="@id/id_ownerName"
+                tools:text="2-3-2023" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+</layout>

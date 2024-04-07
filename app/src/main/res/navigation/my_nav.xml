@@ -37,14 +37,22 @@
         tools:layout="@layout/fragment_my_tasks" />
     <fragment
         android:id="@+id/ipListFragment"
-        android:name="com.galaxy.galaxynet.ui.tabs.IpListFragment"
+        android:name="com.galaxy.galaxynet.ui.tabs.ip.IpListFragment"
         android:label="fragment_ip_list"
-        tools:layout="@layout/fragment_ip_list" />
+        tools:layout="@layout/fragment_ip_list">
+        <action
+            android:id="@+id/action_ipListFragment_to_addIPFragment"
+            app:destination="@id/addIPFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.galaxy.galaxynet.ui.tabs.profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
     <fragment
         android:id="@+id/managerProfileFragment"
         android:name="com.galaxy.galaxynet.ui.tabs.profile.ManagerProfileFragment"
@@ -68,6 +76,15 @@
         <action
             android:id="@+id/action_managerProfileFragment_to_addDeviceTypeFragment"
             app:destination="@id/addDeviceTypeFragment" />
+        <action
+            android:id="@+id/action_managerProfileFragment_to_devicesListFragment"
+            app:destination="@id/devicesListFragment" />
+        <action
+            android:id="@+id/action_managerProfileFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_managerProfileFragment_to_sendNotificationFragment"
+            app:destination="@id/sendNotificationFragment" />
     </fragment>
     <fragment
         android:id="@+id/addAccountFragment"
@@ -135,4 +152,23 @@
         android:name="com.galaxy.galaxynet.ui.controlPanel.AddDeviceTypeFragment"
         android:label="fragment_add_device_type"
         tools:layout="@layout/fragment_add_device_type" />
+    <dialog
+        android:id="@+id/addIPFragment"
+        android:name="com.galaxy.galaxynet.ui.tabs.ip.AddIPFragment"
+        android:label="fragment_add_i_p"
+        tools:layout="@layout/fragment_add_i_p">
+        <argument
+            android:name="parent_ip"
+            app:argType="string"
+            app:nullable="true" />
+    </dialog>
+    <fragment
+        android:id="@+id/devicesListFragment"
+        android:name="com.galaxy.galaxynet.ui.controlPanel.DevicesListFragment"
+        android:label="fragment_devices_list"
+        tools:layout="@layout/fragment_devices_list" />
+    <dialog
+        android:id="@+id/sendNotificationFragment"
+        android:name="com.galaxy.galaxynet.ui.controlPanel.SendNotificationFragment"
+        android:label="SendNotificationFragment" />
 </navigation>

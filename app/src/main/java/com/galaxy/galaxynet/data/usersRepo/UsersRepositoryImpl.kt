@@ -2,6 +2,7 @@ package com.galaxy.galaxynet.data.usersRepo
 
 
 import android.util.Log
+import com.galaxy.galaxynet.model.Token
 import com.galaxy.galaxynet.model.User
 import com.galaxy.util.UserResult
 import com.google.firebase.firestore.FirebaseFirestore
@@ -13,11 +14,21 @@ class UsersRepositoryImpl @Inject constructor(
     firebaseFirestore: FirebaseFirestore
 ) : UsersRepository {
     private val usersCollection = firebaseFirestore.collection(User.COLLECTION_NAME)
+    private val tokensCollection = firebaseFirestore.collection(Token.TOKENS_COLLECTION)
 
     override suspend fun insertUserToFirestore(user: User): Result<Unit> {
         return try {
             val userId = user.id ?: usersCollection.document().id
             usersCollection.document(userId).set(user)
+            Result.success(Unit)
+        } catch (exception: Exception) {
+            Result.failure(exception)
+        }
+    }
+
+    override fun saveUserToken(token: Token): Result<Unit> {
+        return try {
+            tokensCollection.document(token.id).set(token)
             Result.success(Unit)
         } catch (exception: Exception) {
             Result.failure(exception)
@@ -44,6 +55,19 @@ class UsersRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             Log.e("getAllUsers", "Unexpected exception: ${e.message}", e)
             throw Exception("An error occurred while retrieving users.") // Provide a user-friendly message
+        }
+    }
+
+    override suspend fun getAllTokens(): List<Token> {
+        try {
+            val querySnapshot = tokensCollection.get().await()
+            return querySnapshot.toObjects(Token::class.java)
+        } catch (e: FirebaseFirestoreException) {
+            Log.e("getAllUsers", "FirebaseFirestoreException: ${e.message}", e)
+            throw e
+        } catch (e: Exception) {
+            Log.e("getAllUsers", "Unexpected exception: ${e.message}", e)
+            throw Exception("An error occurred while retrieving users.")
         }
     }
 

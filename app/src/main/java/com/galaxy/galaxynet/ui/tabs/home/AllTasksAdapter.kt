@@ -31,6 +31,10 @@ class AllTasksAdapter(var tasksList: MutableList<Task?>?) :
                 item.takeTaskBtn.visibility = View.GONE
                 item.taskWorkerName.visibility = View.VISIBLE
             }
+            item.icEdit.visibility = View.VISIBLE
+            item.icDelete.visibility = View.VISIBLE
+            item.executePendingBindings()
+            
         }
 
 

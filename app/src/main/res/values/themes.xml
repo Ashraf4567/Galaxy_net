@@ -48,4 +48,9 @@
         <item name="cornerSizeTopRight">50dp</item>
     </style>
 
+    <style name="search_view_style">
+        <item name="editTextColor">@color/white</item>
+        <item name="android:textColorHint">@color/Secondary</item>
+    </style>
+
 </resources>
