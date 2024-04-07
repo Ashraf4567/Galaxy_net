@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.galaxy.galaxynet.ui.tabs.ip.IpViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layoutDirection="rtl"
+        tools:context=".ui.tabs.ip.EditIPActivity">
+
+        <TextView
+            android:id="@+id/parentIp_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:fontFamily="@font/almarai_font"
+            android:text="تعديل خصائص ال IP"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:drawableStartCompat="@drawable/ic_network"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/parentIp_container"
+            style="@style/LoginTextInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:error="@{vm.ipValueError}"
+            app:layout_constraintTop_toBottomOf="@id/parentIp_text">
+
+            <EditText
+                android:id="@+id/parentIP"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/almarai_font"
+                android:hint="متفرع من"
+                android:inputType="phone"
+                android:text="@={vm.parentIPLiveData}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/ip_value_container"
+            style="@style/LoginTextInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:error="@{vm.ipValueError}"
+            app:layout_constraintTop_toBottomOf="@id/parentIp_container">
+
+            <EditText
+                android:id="@+id/ip_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/almarai_font"
+                android:hint="اضف الIP.."
+                android:inputType="phone"
+                android:text="@={vm.ipValue}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/ip_keyword_container"
+            style="@style/LoginTextInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:error="@{vm.ipKeyWordError}"
+            app:layout_constraintTop_toBottomOf="@id/ip_value_container">
+
+            <EditText
+                android:id="@+id/ip_keyword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/almarai_font"
+                android:hint="اضف كلمه مفتاحيه"
+                android:inputType="text"
+                android:text="@={vm.ipKeyWord}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/ip_description_container"
+            style="@style/LoginTextInputLayoutStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:error="@{vm.ipDescriptionError}"
+            app:layout_constraintTop_toBottomOf="@id/ip_keyword_container"
+
+            >
+
+            <EditText
+                android:id="@+id/ip_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/almarai_font"
+                android:hint="اضف وصف الIP.."
+                android:maxLines="3"
+                android:minLines="3"
+                android:text="@={vm.ipDescription}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Spinner
+            android:id="@+id/ip_device_type"
+            style="@style/SpinnerTheme"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ip_description_container"
+            tools:setOnItemSelectedListener="@{vm.clicksListener}" />
+
+        <Button
+            android:id="@+id/edit_ip_btn"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:fontFamily="@font/almarai_font"
+            android:text="حفظ التعديل"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ip_device_type"
+            app:layout_goneMarginTop="9dp" />
+
+        <Button
+            android:id="@+id/cancel_btn"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:backgroundTint="@color/red"
+            android:fontFamily="@font/almarai_font"
+            android:text="الغاء"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ip_device_type"
+            app:layout_goneMarginTop="9dp" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/colorPrimary"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

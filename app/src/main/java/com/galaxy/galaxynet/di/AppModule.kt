@@ -2,6 +2,8 @@ package com.galaxy.galaxynet.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.galaxy.galaxynet.data.ipRepo.IPRepositoryImpl
+import com.galaxy.galaxynet.data.ipRepo.IpRepository
 import com.galaxy.galaxynet.data.tasksRepo.TasksRepository
 import com.galaxy.galaxynet.data.tasksRepo.TasksRepositoryImpl
 import com.galaxy.galaxynet.data.usersRepo.UsersRepository
@@ -44,5 +46,10 @@ class AppModule {
     @Provides
     fun provideTasksRepository(firebaseFirestore: FirebaseFirestore): TasksRepository {
         return TasksRepositoryImpl(firebaseFirestore)
+    }
+
+    @Provides
+    fun provideIpRepo(firebaseFirestore: FirebaseFirestore): IpRepository {
+        return IPRepositoryImpl(firebaseFirestore)
     }
 }

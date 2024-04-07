@@ -23,6 +23,18 @@
         app:layout_constraintTop_toTopOf="parent"
         />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/ic_sendAlert"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        app:icon="@drawable/ic_notification"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="22dp"
+        app:iconTintMode="multiply"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.circularreveal.cardview.CircularRevealCardView
         android:layout_width="match_parent"
         android:layout_height="0dp"

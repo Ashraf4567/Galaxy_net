@@ -8,10 +8,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.galaxy.galaxynet.data.local.SessionManager
 import com.galaxy.galaxynet.data.tasksRepo.TasksRepository
+import com.galaxy.galaxynet.data.usersRepo.UsersRepository
 import com.galaxy.galaxynet.model.Task
 import com.galaxy.galaxynet.model.TaskAcceptanceStatus
 import com.galaxy.galaxynet.model.TaskCompletionState
 import com.galaxy.galaxynet.model.User
+import com.galaxy.galaxynet.notification.PushNotificationService
 import com.galaxy.util.AddTaskResult
 import com.galaxy.util.TransactionResult
 import com.galaxy.util.UiState
@@ -24,18 +26,25 @@ import javax.inject.Inject
 @HiltViewModel
 class TasksViewModel @Inject constructor(
     private val tasksRepository: TasksRepository,
-    private val sessionManager: SessionManager,
+    val sessionManager: SessionManager,
+    val usersRepository: UsersRepository,
     val auth: FirebaseAuth
 ) : ViewModel() {
     val isManager: Boolean = sessionManager.getUserData()?.type.equals(User.MANAGER)
+
     val title = MutableLiveData<String>()
+    val titleError = MutableLiveData<String?>()
     val description = MutableLiveData<String>()
+    val descriptionError = MutableLiveData<String?>()
+    val points = MutableLiveData<String?>()
+    val pointsError = MutableLiveData<String?>()
+
     val taskCompletionState = TaskCompletionState.NEW.state
     val creatorName = sessionManager.getUserData()?.name
     var taskCategory = ""
     val taskAcceptanceStatus =
         if (isManager) TaskAcceptanceStatus.ACCEPTED.state else TaskAcceptanceStatus.PENDING.state
-    val points = MutableLiveData<String?>()
+
 
     val uIstate = MutableLiveData<UiState>()
     val requestsLiveData = MutableLiveData<MutableList<Task?>?>()
@@ -77,6 +86,7 @@ class TasksViewModel @Inject constructor(
     }
 
     fun addTask() {
+        if (!validForm()) return
         uIstate.postValue(UiState.LOADING)
         val task = Task(
             id = UUID.randomUUID().toString(),
@@ -93,8 +103,18 @@ class TasksViewModel @Inject constructor(
                 val result = tasksRepository.addTask(task)
                 when (result) {
                     is AddTaskResult.Success -> {
+                        val tokens = usersRepository.getAllTokens()
+                        tokens.forEach {
+                            PushNotificationService
+                                .sendNotificationToDevice(
+                                    it.tokenValue ?: "",
+                                    "مهمه جديده",
+                                    " اضافه مهمه جديده بواسطه ${sessionManager.getUserData()?.name}"
+                                )
+                        }
                         uIstate.postValue(UiState.SUCCESS)
                         Log.d("test Add task", "task added successfully")
+
                     }
 
                     is AddTaskResult.Failure -> {
@@ -129,6 +149,16 @@ class TasksViewModel @Inject constructor(
                 when (result) {
                     is TransactionResult.Success -> {
                         messageLiveData.postValue("تم التعديل علي المهمه والاضافه بنجاح")
+                        val tokens = usersRepository.getAllTokens()
+                        tokens.forEach {
+                            if (!it.id.equals(auth.currentUser?.uid))
+                                PushNotificationService
+                                    .sendNotificationToDevice(
+                                        it.tokenValue ?: "",
+                                        "مهمه جديده",
+                                        " تم تعديل مهمه جديده بواسطه ${sessionManager.getUserData()?.name}"
+                                    )
+                        }
                         uIstate.postValue(UiState.SUCCESS)
                         Log.d("test Update task", "task updated successfully")
                     }
@@ -216,6 +246,16 @@ class TasksViewModel @Inject constructor(
                 when (result) {
                     is TransactionResult.Success -> {
                         messageLiveData.postValue("تم قبول المهمه بنجاح")
+                        val tokens = usersRepository.getAllTokens()
+                        tokens.forEach {
+                            PushNotificationService
+                                .sendNotificationToDevice(
+                                    it.tokenValue ?: "",
+                                    "قبول طلب",
+                                    " تم قبول طلب اضافه مهمه بواسطه ${sessionManager.getUserData()?.name}"
+                                )
+
+                        }
                         uIstate.postValue(UiState.SUCCESS)
                     }
 
@@ -305,6 +345,15 @@ class TasksViewModel @Inject constructor(
 
                     is TransactionResult.Success -> {
                         messageLiveData.postValue("تم اكمال المهمه")
+                        val tokens = usersRepository.getAllTokens()
+                        tokens.forEach {
+                            PushNotificationService
+                                .sendNotificationToDevice(
+                                    it.tokenValue ?: "",
+                                    "اكمال مهمة ${task.creatorName}",
+                                    " تم اكمال مهمه جديده بواسطه ${sessionManager.getUserData()?.name}"
+                                )
+                        }
                         uIstate.postValue(UiState.SUCCESS)
                     }
                 }
@@ -315,6 +364,35 @@ class TasksViewModel @Inject constructor(
                 Log.d("test Update task", e.localizedMessage ?: "something went wrong")
             }
         }
+    }
+
+
+    private fun validForm(): Boolean {
+        var isValid = true
+
+        if (title.value.isNullOrBlank()) {
+            //showError
+            titleError.postValue("برجاء ادخال عنوان المهمه")
+            isValid = false
+        } else {
+            titleError.postValue(null)
+        }
+        if (description.value.isNullOrBlank()) {
+            //showError
+            descriptionError.postValue("برجاء ادخال وصف المهمه")
+            isValid = false
+        } else {
+            descriptionError.postValue(null)
+        }
+        if (points.value.isNullOrBlank()) {
+            //showError
+            pointsError.postValue("ادخل النقاط")
+            isValid = false
+        } else {
+            pointsError.postValue(null)
+        }
+
+        return isValid
     }
 
 }

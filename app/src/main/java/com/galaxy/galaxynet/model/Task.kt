@@ -23,12 +23,5 @@ data class Task(
         const val COLLECTION_NAME = "tasks"
     }
 
-    fun getFormattedTime(): String {
-        val localDateTime =
-            LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a"))
-        return localDateTime.format(DateTimeFormatter.ofPattern("h:mm a"))
-    }
-
-
 }
 

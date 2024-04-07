@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.galaxy.galaxynet.R
 import com.galaxy.galaxynet.databinding.FragmentLoginBinding
 import com.galaxy.util.UiState
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -69,7 +70,7 @@ class LoginFragment : Fragment() {
             UiState.SUCCESS -> {
                 Toast.makeText(requireActivity(), "تم تسجيل الدخول بنجاح", Toast.LENGTH_SHORT)
                     .show()
-
+                createToken()
                 findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
 
 
@@ -77,6 +78,17 @@ class LoginFragment : Fragment() {
 
             else -> {}
         }
+    }
+
+    private fun createToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if (it.isSuccessful) {
+                val token = it.result
+                viewModel.saveToken(token.toString())
+            }
+
+        }
+
     }
 
 

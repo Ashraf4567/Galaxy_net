@@ -120,11 +120,17 @@ class AllTasksFragment : Fragment() {
         }
 
         adapter.onEditTaskClickListener = AllTasksAdapter.OnTaskClickListener { task, position ->
-            val intent = Intent(requireActivity(), EditTaskActivity::class.java).apply {
-                putExtra(Constants.TASK_ID, task.id.toString())
-                Log.d("test id", task.id.toString())
-                startActivity(this)
+            if (viewModel.sessionManager.getUserData()?.type.equals(com.galaxy.galaxynet.model.User.MANAGER)) {
+                val intent = Intent(requireActivity(), EditTaskActivity::class.java).apply {
+                    putExtra(Constants.TASK_ID, task.id.toString())
+                    Log.d("test id", task.id.toString())
+                    startActivity(this)
+                }
+            } else {
+                Toast.makeText(requireActivity(), "لايوجد لديك صلاحيه التعديل", Toast.LENGTH_SHORT)
+                    .show()
             }
+
         }
 
         swipeToRefreshView.setOnRefreshListener {
@@ -152,5 +158,9 @@ class AllTasksFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getAllTasksByCategory(selectedTabName)
+    }
 
 }

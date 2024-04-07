@@ -8,17 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.galaxy.galaxynet.ui.auth.AuthViewModel
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.firestore
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SplashFragment : Fragment() {
-    private val viewModel: AuthViewModel by activityViewModels()
+    private val viewModel: AuthViewModel by viewModels()
     val auth = FirebaseAuth.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,40 +34,47 @@ class SplashFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // In your Application class or first Activity
-        Log.e("test saved local", viewModel.sessionManager.getUserData()?.name.toString())
-        Firebase.firestore.persistentCacheIndexManager?.apply {
-            // Indexing is disabled by default
-            enableIndexAutoCreation()
-        } ?: println("indexManager is null")
+
+
+
 
         Handler(Looper.getMainLooper())
             .postDelayed({
+
                 checkUserAuthentication()
-            }, 500)
+
+            }, 200)
     }
 
     private fun checkUserAuthentication() {
 
 
         if (viewModel.sessionManager.getUserData()?.name == null) {
-            // User is already authenticated, proceed to MainActivity
-
             startLoginFragment()
         } else {
-            // User is not authenticated, navigate to LoginActivity
             startHome()
-
-
         }
     }
 
     private fun startHome() {
+        createToken()
         findNavController().navigate(R.id.action_splashFragment_to_homeFragment)
     }
 
     private fun startLoginFragment() {
         Log.e("test saved local", viewModel.sessionManager.getUserData()?.name.toString())
         findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+    }
+
+    fun createToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if (it.isSuccessful) {
+                val token = it.result
+                Log.d("token value", token.toString())
+                viewModel.saveToken(token.toString())
+            }
+
+        }
+
     }
 }

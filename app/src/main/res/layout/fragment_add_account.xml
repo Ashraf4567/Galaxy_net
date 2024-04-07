@@ -135,7 +135,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="20dp"
-                    android:checked="true"
                     android:fontFamily="@font/almarai_font"
                     android:text="موظف"
                     android:textColor="@color/black"

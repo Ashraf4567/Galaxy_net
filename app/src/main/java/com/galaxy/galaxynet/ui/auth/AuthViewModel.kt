@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.galaxy.galaxynet.R
 import com.galaxy.galaxynet.data.local.SessionManager
 import com.galaxy.galaxynet.data.usersRepo.UsersRepository
+import com.galaxy.galaxynet.model.Token
 import com.galaxy.galaxynet.model.User
 import com.galaxy.util.SingleLiveEvent
 import com.galaxy.util.UiState
@@ -39,8 +40,10 @@ class AuthViewModel @Inject constructor(
     val userNameError = MutableLiveData<String?>()
     val passwordConfirmationError = MutableLiveData<String?>()
 
+    val userLiveData = MutableLiveData<User?>()
     val state = SingleLiveEvent<UiState>()
     val isManager = MutableLiveData<Boolean>()
+    val uiState = SingleLiveEvent<UiState>()
 
     fun checkUserType() {
         if (sessionManager.getUserData()?.type.equals(User.MANAGER)) {
@@ -124,33 +127,36 @@ class AuthViewModel @Inject constructor(
     }
 
     suspend fun getUserData(id: String?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val result = usersRepository.getUserById(id)
+        uiState.postValue(UiState.LOADING)
+        try {
+            val result = usersRepository.getUserById(id)
 
-                when (result) {
-                    is UserResult.Success -> {
-                        val user = result.user
-                        // Cache user data as session manager
-                        sessionManager.saveUserData(user)
-                        checkUserType()
-                        state.postValue(UiState.SUCCESS)
-                    }
-
-                    is UserResult.Failure -> {
-                        Log.d("test save data", "Failed: ${result.exception.localizedMessage}")
-                    }
-
-                    else -> {}
+            when (result) {
+                is UserResult.Success -> {
+                    val user = result.user
+                    // Cache user data as session manager
+                    userLiveData.postValue(user)
+                    uiState.postValue(UiState.SUCCESS)
+                    sessionManager.saveUserData(user)
+                    checkUserType()
+                    state.postValue(UiState.SUCCESS)
                 }
-                Log.d("test save data", "End getUserData coroutine")
-            } catch (e: CancellationException) {
-                Log.d("test save data", "Coroutine canceled: ${e.localizedMessage}")
-                e.printStackTrace() // Log the stack trace for debugging
-            } catch (e: Exception) {
-                Log.e("test save data", "Exception in getUserData coroutine: ${e.localizedMessage}")
+
+                is UserResult.Failure -> {
+                    Log.d("test save data", "Failed: ${result.exception.localizedMessage}")
+                    uiState.postValue(UiState.ERROR)
+                }
+
+                else -> {}
             }
+            Log.d("test save data", "End getUserData coroutine")
+        } catch (e: CancellationException) {
+            Log.d("test save data", "Coroutine canceled: ${e.localizedMessage}")
+            e.printStackTrace() // Log the stack trace for debugging
+        } catch (e: Exception) {
+            Log.e("test save data", "Exception in getUserData coroutine: ${e.localizedMessage}")
         }
+
     }
 
     private fun addUser(user: User) = viewModelScope.launch {
@@ -162,6 +168,27 @@ class AuthViewModel @Inject constructor(
         if (result.isSuccess) {
             state.postValue(UiState.SUCCESS)
             Log.d("test save data", "saved in firestore" + result.isSuccess)
+        }
+    }
+
+    fun saveToken(token: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val userId = FirebaseAuth.getInstance().currentUser?.uid
+                if (userId != null) {
+                    val userToken = Token(tokenValue = token)
+                    val saveTokenResult = usersRepository.saveUserToken(userToken)
+                    if (saveTokenResult.isFailure) {
+                        Log.e("updateToken", "Error saving token: ${saveTokenResult.isFailure}")
+                    } else {
+                        Log.d("updateToken", "Token saved successfully")
+                    }
+                } else {
+                    Log.w("updateToken", "Failed to get current user ID")
+                }
+            } catch (e: Exception) {
+                Log.e("updateToken", "Error during token update: ${e.message}", e)
+            }
         }
     }
 

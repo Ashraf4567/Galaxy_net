@@ -12,6 +12,8 @@ import com.galaxy.galaxynet.R
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
+private const val CHANNEL_ID = "my_channel"
+
 class FCMNotificationService : FirebaseMessagingService() {
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -21,7 +23,7 @@ class FCMNotificationService : FirebaseMessagingService() {
             // ...
         }
         Log.d("test receive", remoteMessage.messageId.toString())
-// Check if message contains a notification payload.
+        // Check if message contains a notification payload.
         remoteMessage.notification?.let {
             val messageBody = it.body
             val messageTitle = it.title

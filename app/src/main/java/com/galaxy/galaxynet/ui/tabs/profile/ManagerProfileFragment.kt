@@ -21,7 +21,14 @@ class ManagerProfileFragment : Fragment() {
 
     //manger -> menu (my account - add tasks request - employees list - add Account)
     val sectionsList =
-        listOf("حسابي", "طلبات اضافه المهام", "قائمه الموظفين", "اضافه حساب", "اضافه نوع جهاز")
+        listOf(
+            "حسابي",
+            "طلبات اضافه المهام",
+            "قائمه الموظفين",
+            "اضافه حساب",
+            "اضافه نوع جهاز",
+            "احصائيات الاجهزه"
+        )
     private val sectionsAdapter = ManagerSectionsAdapter(sectionsList)
 
     override fun onCreateView(
@@ -53,6 +60,9 @@ class ManagerProfileFragment : Fragment() {
             Toast.makeText(requireActivity(), "تم تسجيل الخروج", Toast.LENGTH_LONG).show()
             findNavController().navigate(R.id.action_managerProfileFragment_to_loginFragment)
         }
+        binding.icSendAlert.setOnClickListener {
+            findNavController().navigate(R.id.action_managerProfileFragment_to_sendNotificationFragment)
+        }
     }
 
     private fun handleSectionsNavigation(it: String) {
@@ -71,6 +81,13 @@ class ManagerProfileFragment : Fragment() {
 
             "اضافه نوع جهاز" -> {
                 findNavController().navigate(R.id.action_managerProfileFragment_to_addDeviceTypeFragment)
+            }
+            "احصائيات الاجهزه" -> {
+                findNavController().navigate(R.id.action_managerProfileFragment_to_devicesListFragment)
+            }
+
+            "حسابي" -> {
+                findNavController().navigate(R.id.action_managerProfileFragment_to_profileFragment)
             }
 
         }

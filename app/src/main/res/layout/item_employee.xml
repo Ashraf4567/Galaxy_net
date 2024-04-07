@@ -32,6 +32,7 @@
                 tools:text="الاسم: اشرف محمد" />
 
             <TextView
+                android:id="@+id/employeePoints"
                 style="@style/TextProfileMenu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -39,6 +40,28 @@
                 android:textSize="15sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/employeeName"
+                tools:text="اجمالي النقاط: 25" />
+
+            <TextView
+                android:id="@+id/numberOfCompletedTasks"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{`عدد المهام المكتمله بواسطته: ` +user.numberOfCompletedTasks}"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/employeePoints"
+                tools:text="اجمالي النقاط: 25" />
+
+            <TextView
+                android:id="@+id/type"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{`النوع : ` +user.type}"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/numberOfCompletedTasks"
                 tools:text="اجمالي النقاط: 25" />
 
 
