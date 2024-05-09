@@ -8,24 +8,27 @@ import androidx.lifecycle.viewModelScope
 import com.galaxy.galaxynet.data.ipRepo.IpRepository
 import com.galaxy.galaxynet.data.usersRepo.UsersRepository
 import com.galaxy.galaxynet.model.DeviceType
+import com.galaxy.galaxynet.model.Ip
 import com.galaxy.galaxynet.model.User
 import com.galaxy.galaxynet.notification.PushNotificationService
 import com.galaxy.util.SingleLiveEvent
 import com.galaxy.util.TransactionResult
 import com.galaxy.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ControlPanelViewModel @Inject constructor(
-    val usersRepository: UsersRepository,
-    val ipRepository: IpRepository
+    private val usersRepository: UsersRepository,
+    private val ipRepository: IpRepository
 ) : ViewModel() {
 
     val uIstate = MutableLiveData<UiState>()
-    private val _users = MutableLiveData<List<User>>()
-    val users: LiveData<List<User>> = _users
+
+    private val _ipList = MutableLiveData<MutableList<Ip?>>()
+    val ipList: LiveData<MutableList<Ip?>> = _ipList
 
     val uiState = SingleLiveEvent<UiState>()
     val devicesLivedata = MutableLiveData<List<DeviceType>>()
@@ -35,19 +38,20 @@ class ControlPanelViewModel @Inject constructor(
     val notificationMessage = MutableLiveData<String?>()
     val notificationMessageError = MutableLiveData<String?>()
 
-    fun getAllEmployees() {
-        uIstate.postValue(UiState.LOADING)
-        viewModelScope.launch {
+    fun getFilteredIPs(deviceName: String){
+        uiState.postValue(UiState.LOADING)
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                val result = usersRepository.getAllUsers()
-                _users.postValue(result)
-                uIstate.postValue(UiState.SUCCESS)
-            } catch (e: Exception) {
-                Log.e("test get all users", e.message.toString())
-                uIstate.postValue(UiState.ERROR)
+                val result= ipRepository.getIpsByDevice(deviceName)
+                _ipList.postValue(result.toMutableList())
+                uiState.postValue(UiState.SUCCESS)
+            }catch (e:Exception){
+                Log.d("test getFilteredIPs", e.message.toString())
+                uiState.postValue(UiState.ERROR)
             }
         }
     }
+
 
     fun getDeviceStatistics() {
         uiState.postValue(UiState.LOADING)
@@ -106,7 +110,7 @@ class ControlPanelViewModel @Inject constructor(
         }
     }
 
-    fun validateSendNotificationForm(): Boolean {
+    private fun validateSendNotificationForm(): Boolean {
         var isValid = true
 
         if (notificationTitle.value.isNullOrBlank()) {

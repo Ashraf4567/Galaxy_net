@@ -28,7 +28,7 @@ class IpListFragment : Fragment() {
     lateinit var binding: FragmentIpListBinding
     private val viewModel: IpViewModel by viewModels()
     val bundle = Bundle()
-    private val adapter = IPListAdapter(null)
+    private val adapter = IPListAdapter(null , true)
     private val clickedIpStack = Stack<Ip>()
 
 
@@ -63,10 +63,6 @@ class IpListFragment : Fragment() {
         viewModel.uiState.observe(viewLifecycleOwner) {
             handleState(it)
         }
-    }
-
-    fun showNoConnectionToast() {
-        Toast.makeText(requireContext(), "انت غير متصل بالانترنت", Toast.LENGTH_SHORT).show()
     }
 
     private fun initViews() {
@@ -158,7 +154,6 @@ class IpListFragment : Fragment() {
 
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                Log.d("test search", query ?: "null")
 
                 return true
             }
@@ -168,7 +163,7 @@ class IpListFragment : Fragment() {
                 if (query?.isNullOrBlank() == true) {
                     viewModel.getMainIPList()
                 } else {
-                    viewModel.searchInIps(query ?: "")
+                    viewModel.searchLocally(query)
                 }
 
                 return true

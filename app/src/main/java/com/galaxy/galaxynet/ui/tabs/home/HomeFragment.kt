@@ -18,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class HomeFragment : Fragment() {
     lateinit var binding: FragmentHomeBinding
     private val adapter = AllTasksAdapter(null)
-    private val viewModel: AuthViewModel by viewModels()
+    private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,9 +36,7 @@ class HomeFragment : Fragment() {
         val userName = viewModel.sessionManager.getUserData()?.name
         binding.greetingText.text = "مرحبا, " + userName
 
-
-
-
+        initObservers()
 
         binding.allTasksContainer.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_allTasksFragment)
@@ -58,6 +56,21 @@ class HomeFragment : Fragment() {
         }
 
 
+    }
+
+    private fun initObservers() {
+        viewModel.numOfNewTasks.observe(viewLifecycleOwner) {num ->
+            binding.numberOfNewTasks.text = num.toString()
+        }
+        viewModel.numOfCompletedTasks.observe(viewLifecycleOwner) {num ->
+            binding.numberOfCompletedTasks.text = num.toString()
+        }
+        viewModel.numOfInProcessTasks.observe(viewLifecycleOwner) {num ->
+            binding.numberOfInProgressTasks.text = num.toString()
+        }
+        viewModel.numOfAllTasks.observe(viewLifecycleOwner) {num ->
+            binding.numberOfAllTasks.text = num.toString()
+        }
     }
 
     private fun handleNavigation(tasksState: String) {

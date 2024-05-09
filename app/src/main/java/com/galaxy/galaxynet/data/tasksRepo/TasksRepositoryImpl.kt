@@ -204,7 +204,14 @@ class TasksRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getCurrentTasks(userName: String): List<Task?>? {
+    override suspend fun getTaskCount(): Int {
+        val querySnapshot = firestore.collection(Task.COLLECTION_NAME)
+            .get()
+            .await()
+        return querySnapshot.size()
+    }
+
+    override suspend fun getCurrentUserTasks(userName: String): List<Task?>? {
         try {
             val querySnapshot = firestore.collection(Task.COLLECTION_NAME)
                 .whereEqualTo("workerName", userName)

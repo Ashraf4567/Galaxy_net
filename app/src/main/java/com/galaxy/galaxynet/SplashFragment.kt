@@ -37,13 +37,21 @@ class SplashFragment : Fragment() {
 
 
 
+//        Handler(Looper.getMainLooper())
+//            .postDelayed({
+//
+//                checkUserAuthentication()
+//
+//            }, 200)
 
-        Handler(Looper.getMainLooper())
-            .postDelayed({
-
-                checkUserAuthentication()
-
-            }, 200)
+        viewModel.isUserExist()
+        viewModel.isExist.observe(viewLifecycleOwner) {
+            if (it) {
+                startHome()
+            } else {
+                startLoginFragment()
+            }
+        }
     }
 
     private fun checkUserAuthentication() {
@@ -62,6 +70,8 @@ class SplashFragment : Fragment() {
     }
 
     private fun startLoginFragment() {
+        viewModel.sessionManager.logout()
+        auth.signOut()
         Log.e("test saved local", viewModel.sessionManager.getUserData()?.name.toString())
         findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
     }

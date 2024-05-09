@@ -31,6 +31,14 @@ class DeviceListAdapter(var devicesList: List<DeviceType?>?) :
         val ip = devicesList?.get(position)
         holder.bind(ip!!)
 
+        holder.item.root.setOnClickListener {
+            onDeviceClickListener?.onClick(ip)
+        }
+    }
+
+    var onDeviceClickListener: OnDeviceClickListener? = null
+    fun interface OnDeviceClickListener {
+        fun onClick(device: DeviceType)
     }
 
 

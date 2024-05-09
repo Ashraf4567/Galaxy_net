@@ -7,11 +7,11 @@ import com.galaxy.util.TransactionResult
 interface IpRepository {
     suspend fun addDeviceType(type: String): TransactionResult
     suspend fun getAllDevicesTypes(): List<String>
+    suspend fun getAllIps(): List<Ip>
     suspend fun addIp(ip: Ip): TransactionResult
     suspend fun getMainIPs(): List<Ip>
     suspend fun getAllDevices(): List<DeviceType>
     suspend fun getSubListIPs(parentIp: String): List<Ip>
-    suspend fun searchIp(query: String): List<Ip>
     suspend fun deleteIp(ip: Ip, value: String): TransactionResult
 
     suspend fun getSpecificIp(id: String): Ip
@@ -20,5 +20,6 @@ interface IpRepository {
     suspend fun increaseDeviceNumber(deviceName: String): TransactionResult
     suspend fun decreaseDeviceNumber(deviceName: String): TransactionResult
     suspend fun updateIP(id: String, updatedIp: Ip, oldDeviceName: String): TransactionResult
+    suspend fun getIpsByDevice(deviceName: String): List<Ip>
 
 }

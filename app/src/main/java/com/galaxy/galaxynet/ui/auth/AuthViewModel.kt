@@ -44,6 +44,9 @@ class AuthViewModel @Inject constructor(
     val state = SingleLiveEvent<UiState>()
     val isManager = MutableLiveData<Boolean>()
     val uiState = SingleLiveEvent<UiState>()
+    val isExist = MutableLiveData<Boolean>()
+
+    val message = MutableLiveData<String>()
 
     fun checkUserType() {
         if (sessionManager.getUserData()?.type.equals(User.MANAGER)) {
@@ -65,10 +68,10 @@ class AuthViewModel @Inject constructor(
 
 
     suspend fun logIn() {
-
-
+        var isFound: Boolean = false
         try {
             isLoading.postValue(true)
+            state.postValue(UiState.LOADING)
             if (validForm()) {
                 val authResult = withContext(Dispatchers.IO) {
                     auth.signInWithEmailAndPassword(email.value!!, password.value!!).await()
@@ -76,8 +79,17 @@ class AuthViewModel @Inject constructor(
 
                 // Check if authentication was successful
                 if (authResult.user != null) {
-                    val user = User(name = "Ashraf", email = email.value, id = authResult.user?.uid)
-                    getUserData(user.id)
+                    usersRepository.getAllUsers().forEach {
+                        if (it.id == authResult.user?.uid) {
+                            val user = User(name = "Ashraf", email = email.value, id = authResult.user?.uid)
+                            isFound = true
+                            getUserData(user.id)
+                        }
+                    }
+                    if (!isFound){
+                        message.postValue("تم تعطيل هذا الحساب")
+                    }
+
 
                 } else {
                     state.postValue(UiState.ERROR)
@@ -126,6 +138,31 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun isUserExist(){
+        val userId = sessionManager.getUserData()?.id
+        viewModelScope.launch {
+            try {
+                if (userId.isNullOrBlank()){
+                    isExist.postValue(false)
+                    return@launch
+                }
+                val result = usersRepository.getAllUsers()
+                result.forEach {
+                    if (it.id == userId) {
+                        isExist.postValue(true)
+                        return@launch
+                    }else{
+                        isExist.postValue(false)
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("test get all users", e.message.toString())
+
+            }
+        }
+    }
+
+
     suspend fun getUserData(id: String?) {
         uiState.postValue(UiState.LOADING)
         try {
@@ -147,7 +184,6 @@ class AuthViewModel @Inject constructor(
                     uiState.postValue(UiState.ERROR)
                 }
 
-                else -> {}
             }
             Log.d("test save data", "End getUserData coroutine")
         } catch (e: CancellationException) {

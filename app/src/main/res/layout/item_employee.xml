@@ -31,6 +31,16 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="الاسم: اشرف محمد" />
 
+            <ImageButton
+                android:id="@+id/optionsMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/transparent"
+                android:src="@drawable/ic_more"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
+
             <TextView
                 android:id="@+id/employeePoints"
                 style="@style/TextProfileMenu"

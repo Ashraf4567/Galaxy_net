@@ -1,18 +1,26 @@
 package com.galaxy.galaxynet.ui.tabs.ip
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.galaxy.galaxynet.databinding.ItemIpBinding
 import com.galaxy.galaxynet.model.Ip
 
 
-class IPListAdapter(var iPList: MutableList<Ip?>?) :
+class IPListAdapter(var iPList: MutableList<Ip?>?, private val controllersVisibility :Boolean = true) :
     RecyclerView.Adapter<IPListAdapter.ViewHolder>() {
 
-    class ViewHolder(val item: ItemIpBinding) : RecyclerView.ViewHolder(item.root) {
+    class ViewHolder(val item: ItemIpBinding, private val controllersVisibility: Boolean) : RecyclerView.ViewHolder(item.root) {
         fun bind(ip: Ip) {
             item.ip = ip
+
+            if (!controllersVisibility){
+                item.icDelete.visibility = View.GONE
+                item.icEditIp.visibility = View.GONE
+                item.icOpenInBrowser.visibility = View.GONE
+                item.icAddIpInList.visibility = View.GONE
+            }
         }
 
     }
@@ -22,7 +30,7 @@ class IPListAdapter(var iPList: MutableList<Ip?>?) :
             LayoutInflater.from(parent.context),
             parent, false
         )
-        return ViewHolder(item)
+        return ViewHolder(item , controllersVisibility)
     }
 
     override fun getItemCount(): Int = iPList?.size ?: 0

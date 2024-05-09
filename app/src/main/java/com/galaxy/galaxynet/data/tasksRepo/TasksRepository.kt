@@ -21,7 +21,8 @@ interface TasksRepository {
 
     suspend fun getAllTasksByCategory(category: String): List<Task?>?
     suspend fun getTasksByCompletionState(state: String): List<Task?>?
-    suspend fun getCurrentTasks(userName: String): List<Task?>?
+    suspend fun getCurrentUserTasks(userName: String): List<Task?>?
+    suspend fun getTaskCount(): Int
 
     suspend fun getTaskById(id: String): Task
 }

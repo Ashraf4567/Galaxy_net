@@ -11,4 +11,5 @@ interface UsersRepository {
     suspend fun getAllUsers(): List<User>
     fun saveUserToken(token: Token): Result<Unit>
     suspend fun getAllTokens(): List<Token>
+    suspend fun deleteUser(userId: String): Result<Unit>
 }

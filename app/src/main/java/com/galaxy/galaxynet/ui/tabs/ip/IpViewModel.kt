@@ -37,6 +37,8 @@ class IpViewModel @Inject constructor(
     val ipKeyWord = MutableLiveData<String?>()
     val ipKeyWordError = MutableLiveData<String?>()
 
+    val fullIpList = MutableLiveData<List<Ip>>()
+
 
     var ipDeviceType = ""
     var parentIp: String? = null
@@ -53,6 +55,10 @@ class IpViewModel @Inject constructor(
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             ipDeviceType = parent?.getItemAtPosition(position) as String
         }
+    }
+
+    init {
+        getFullIpList()
     }
 
     fun addIp() {
@@ -217,24 +223,43 @@ class IpViewModel @Inject constructor(
         }
     }
 
-    fun searchInIps(query: String) {
-        uiState.postValue(UiState.LOADING)
+
+    private fun getFullIpList() {
         viewModelScope.launch {
             try {
-                val result = ipsRepository.searchIp(query)
-                ipList.postValue(result.toMutableList())
-                uiState.postValue(UiState.SUCCESS)
-                Log.d(
-                    "test search result",
-                    result[0].toString() + "lenght is ${result.size.toString()}"
-                )
-
+                val result = ipsRepository.getAllIps()
+                fullIpList.postValue(result)
             } catch (e: Exception) {
-                Log.d("test search result", e.message.toString())
-                uiState.postValue(UiState.SUCCESS)
+                Log.e("test get all ip list", e.message.toString())
             }
         }
     }
+
+    fun searchLocally(query: String) {
+        uiState.postValue(UiState.LOADING)
+        viewModelScope.launch {
+            try {
+                val result = filterIpListLocally(query)
+                ipList.postValue(result)
+                uiState.postValue(UiState.SUCCESS)
+            } catch (e: Exception) {
+                uiState.postValue(UiState.ERROR)
+                Log.e("Local search", "Error performing local search: $e")
+            }
+        }
+    }
+
+    private suspend fun filterIpListLocally(query: String): MutableList<Ip?>? {
+        val filteredList = fullIpList.value?.filter { ip ->
+            // Customize this condition based on how you want to perform the search
+            ip.value?.contains(query, ignoreCase = true) == true ||
+                    ip.description?.contains(query, ignoreCase = true) == true ||
+                    ip.keyword?.contains(query, ignoreCase = true) == true
+        }
+        return filteredList?.toMutableList()
+    }
+
+
 
     fun deleteIp(ip: Ip, value: String) {
         uiState.postValue(UiState.LOADING)

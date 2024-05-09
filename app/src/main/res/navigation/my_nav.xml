@@ -144,7 +144,7 @@
     </fragment>
     <fragment
         android:id="@+id/employeesListFragment"
-        android:name="com.galaxy.galaxynet.ui.controlPanel.EmployeesListFragment"
+        android:name="com.galaxy.galaxynet.ui.controlPanel.employeesManagement.EmployeesListFragment"
         android:label="fragment_employees_list"
         tools:layout="@layout/fragment_employees_list" />
     <dialog
@@ -166,9 +166,23 @@
         android:id="@+id/devicesListFragment"
         android:name="com.galaxy.galaxynet.ui.controlPanel.DevicesListFragment"
         android:label="fragment_devices_list"
-        tools:layout="@layout/fragment_devices_list" />
+        tools:layout="@layout/fragment_devices_list" >
+        <action
+            android:id="@+id/action_devicesListFragment_to_filteredIPsFragment"
+            app:destination="@id/filteredIPsFragment" />
+    </fragment>
     <dialog
         android:id="@+id/sendNotificationFragment"
         android:name="com.galaxy.galaxynet.ui.controlPanel.SendNotificationFragment"
         android:label="SendNotificationFragment" />
+    <fragment
+        android:id="@+id/filteredIPsFragment"
+        android:name="com.galaxy.galaxynet.ui.controlPanel.FilteredIPsFragment"
+        android:label="fragment_filted_i_ps"
+        tools:layout="@layout/fragment_filted_i_ps">
+        <argument
+            android:name="deviceName"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 </navigation>

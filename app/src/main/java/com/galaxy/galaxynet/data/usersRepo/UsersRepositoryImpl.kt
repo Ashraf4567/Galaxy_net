@@ -51,10 +51,10 @@ class UsersRepositoryImpl @Inject constructor(
             return querySnapshot.toObjects(User::class.java)
         } catch (e: FirebaseFirestoreException) {
             Log.e("getAllUsers", "FirebaseFirestoreException: ${e.message}", e)
-            throw e // Re-throw the exception for proper handling in the ViewModel
+            throw e
         } catch (e: Exception) {
             Log.e("getAllUsers", "Unexpected exception: ${e.message}", e)
-            throw Exception("An error occurred while retrieving users.") // Provide a user-friendly message
+            throw Exception("An error occurred while retrieving users.")
         }
     }
 
@@ -63,13 +63,22 @@ class UsersRepositoryImpl @Inject constructor(
             val querySnapshot = tokensCollection.get().await()
             return querySnapshot.toObjects(Token::class.java)
         } catch (e: FirebaseFirestoreException) {
-            Log.e("getAllUsers", "FirebaseFirestoreException: ${e.message}", e)
             throw e
         } catch (e: Exception) {
-            Log.e("getAllUsers", "Unexpected exception: ${e.message}", e)
             throw Exception("An error occurred while retrieving users.")
         }
     }
 
+    override suspend fun deleteUser(userId: String): Result<Unit> {
+        return try {
+            usersCollection.document(userId).delete().await()
+            // Consider deleting associated tokens as well
+             tokensCollection.document(userId).delete().await()
+
+            Result.success(Unit)
+        } catch (exception: Exception) {
+            Result.failure(exception)
+        }
+    }
 
 }

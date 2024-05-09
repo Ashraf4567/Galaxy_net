@@ -38,7 +38,7 @@ class LoginFragment : Fragment() {
             lifecycleScope.launch {
                 viewModel.logIn()
             }
-            binding.loginBtn.isEnabled = false
+
         }
 
         observeData()
@@ -47,6 +47,9 @@ class LoginFragment : Fragment() {
 
     private fun observeData() {
 
+        viewModel.message.observe(viewLifecycleOwner){
+            Toast.makeText(requireActivity(), it, Toast.LENGTH_SHORT).show()
+        }
 
         viewModel.state.observe(viewLifecycleOwner) {
             handleState(it)
@@ -75,8 +78,10 @@ class LoginFragment : Fragment() {
 
 
             }
+            UiState.LOADING -> {
+                binding.loginBtn.isEnabled = false
+            }
 
-            else -> {}
         }
     }
 

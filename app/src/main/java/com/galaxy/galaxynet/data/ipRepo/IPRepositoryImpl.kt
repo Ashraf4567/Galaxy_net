@@ -80,6 +80,22 @@ class IPRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getAllIps(): List<Ip> {
+        return try {
+            val ipsSnapshot = ipsCollection.get().await()
+            val ips = mutableListOf<Ip>()
+            for (document in ipsSnapshot.documents) {
+                val ip = document.toObject(Ip::class.java)!!
+                ips.add(ip)
+            }
+            ips
+
+        }catch (e: Exception){
+            Log.e("Get all ips", "Error fetching ips: $e")
+            emptyList()
+        }
+    }
+
     override suspend fun getAllDevices(): List<DeviceType> {
         return try {
             val deviceTypesSnapshot = deviceTypeCollection.get().await()
@@ -235,6 +251,22 @@ class IPRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getIpsByDevice(deviceName: String): List<Ip> {
+        return try {
+            val ipsQuery = ipsCollection.whereEqualTo("deviceType", deviceName)
+            val ipsSnapshot = ipsQuery.get().await()
+            val ips = mutableListOf<Ip>()
+            for (document in ipsSnapshot.documents) {
+                val ip = document.toObject(Ip::class.java)!!
+                ips.add(ip)
+            }
+            ips
+        }catch (e: Exception){
+            Log.e("Get filtered IPs", "Error fetching main IPs: $e")
+            emptyList()
+        }
+    }
+
     override suspend fun getSubListIPs(parentIp: String): List<Ip> {
         return try {
             val subListQuery = ipsCollection.whereEqualTo("parentIp", parentIp)
@@ -326,61 +358,6 @@ class IPRepositoryImpl @Inject constructor(
 
         } catch (e: Exception) {
             TransactionResult.Failure(e)
-        }
-    }
-
-
-    override suspend fun searchIp(query: String): List<Ip> {
-        return try {
-            val searchResult = mutableListOf<Ip>()
-
-            val searchQuery = ipsCollection
-                .whereGreaterThanOrEqualTo("value", query)
-                .whereLessThanOrEqualTo("value", query + "\uf8ff")
-                .get()
-                .await()
-
-            // Add matching results to the list
-            for (document in searchQuery.documents) {
-                val ip = document.toObject(Ip::class.java)
-                ip?.let { searchResult.add(it) }
-            }
-
-            // If there are no exact matches in 'value', check 'description'
-            if (searchResult.isEmpty()) {
-                val descriptionQuery = ipsCollection
-                    .whereGreaterThanOrEqualTo("description", query)
-                    .whereLessThanOrEqualTo("description", query + "\uf8ff")
-                    .get()
-                    .await()
-
-                // Add matching results to the list
-                for (document in descriptionQuery.documents) {
-                    val ip = document.toObject(Ip::class.java)
-                    ip?.let { searchResult.add(it) }
-                }
-            }
-
-            // If there are still no matches, check 'keyword'
-            if (searchResult.isEmpty()) {
-                val keywordQuery = ipsCollection
-                    .whereGreaterThanOrEqualTo("keyword", query)
-                    .whereLessThanOrEqualTo("keyword", query + "\uf8ff")
-                    .get()
-                    .await()
-
-                // Add matching results to the list
-                for (document in keywordQuery.documents) {
-                    val ip = document.toObject(Ip::class.java)
-                    ip?.let { searchResult.add(it) }
-                }
-            }
-
-            // Return the list of matching IPs
-            searchResult
-        } catch (e: Exception) {
-            Log.e("test searchIp", e.message.toString())
-            emptyList() // Return an empty list in case of an error
         }
     }
 

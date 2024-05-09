@@ -15,5 +15,7 @@ class Constants {
         const val CONTENT_TYPE = "application/json"
         const val TOPIC = "/topics/myTopic2"
 
+        const val DEVICE_NAME_KEY = "deviceName"
+
     }
 }

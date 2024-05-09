@@ -227,7 +227,7 @@ class TasksViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val result =
-                    tasksRepository.getCurrentTasks(sessionManager.getUserData()?.name.toString())
+                    tasksRepository.getCurrentUserTasks(sessionManager.getUserData()?.name.toString())
                 allTasksLiveData.postValue(result as MutableList<Task?>?)
                 uIstate.postValue(UiState.SUCCESS)
             } catch (e: Exception) {
