@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="transaction"
+            type="com.galaxy.galaxynet.model.TransactionHistory" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:contentPadding="5dp"
+        android:layoutDirection="rtl">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="20-2-2024"
+                android:text="@{transaction.transactionDate}"
+                style="@style/TextProfileMenu"
+                android:textSize="12sp"
+                />
+
+            <TextView
+                android:id="@+id/transaction_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/date"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="بسبب التأخر عن العمل"
+                android:text="@{transaction.transactionNotes}"
+                style="@style/TextProfileMenu"
+                android:textSize="15sp"
+                />
+            <TextView
+                android:id="@+id/transaction_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/transaction_note"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="نوع العمليه: خصم"
+                android:text="@{`نوع العمليه: ` +transaction.transactionType}"
+                style="@style/TextProfileMenu"
+                android:textSize="14sp"
+                />
+            <TextView
+                android:id="@+id/points"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/transaction_type"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="عدد النقاط: 5"
+                android:text="@{`النقاط: ` +transaction.points}"
+                style="@style/TextProfileMenu"
+                android:textSize="14sp"
+                />
+
+            <TextView
+                android:id="@+id/employeeName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/points"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="عدد النقاط: 5"
+                android:text="@{`اسم الموظف: ` +transaction.employeeName}"
+                style="@style/TextProfileMenu"
+                android:textSize="14sp"
+                />
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>

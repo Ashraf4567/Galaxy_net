@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import com.galaxy.galaxynet.R
 import com.galaxy.galaxynet.databinding.FragmentEmployeesListBinding
 import com.galaxy.galaxynet.model.User
-import com.galaxy.galaxynet.ui.controlPanel.ControlPanelViewModel
-import com.galaxy.galaxynet.ui.controlPanel.EmployeesAdapter
 import com.galaxy.galaxynet.ui.controlPanel.MenuItem
 import com.galaxy.util.UiState
 import com.galaxy.util.showConfirmationDialog
@@ -20,7 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class EmployeesListFragment : Fragment(), EmployeesAdapter.OnEmployeeClickListener {
     lateinit var binding: FragmentEmployeesListBinding
-    private val viewModel: EmployeesViewModel by viewModels()
+    private val viewModel: EmployeesViewModel by activityViewModels()
     private val adapter = EmployeesAdapter(null)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -82,27 +82,43 @@ class EmployeesListFragment : Fragment(), EmployeesAdapter.OnEmployeeClickListen
         Log.d("EmployeesListFragment", "onEmployeeClick called")
     }
 
-    override fun onOptionSelected(userId: String, menuItem: MenuItem) {
+    override fun onOptionSelected(user: User, menuItem: MenuItem) {
 
         when (menuItem) {
-            MenuItem.DELETE -> {
+            MenuItem.EDIT_POINTS -> {
+                val bundle = Bundle()
+                bundle.putString("userId", user.id)
+                bundle.putString("EmployeeName", user.name)
+                findNavController().navigate(R.id.action_employeesListFragment_to_editPointsFragment , bundle)
+            }
+
+            MenuItem.ACTIVE_ACCOUNT -> {
+
                 showConfirmationDialog(
                     title = "",
-                    message = "هل تريد حذف هذا الموظف؟",
+                    message = "هل تريد تفعيل حساب الموظف؟",
                     positiveText = "نعم",
                     negativeText = "الغاء",
                     onPositiveClick = { _, _ ->
-                        viewModel.deleteUser(userId)
+                        viewModel.activeAccount(user.id?:"")
+                        viewModel.getAllEmployees()
+                    }
+                )
+
+            }
+            MenuItem.DISABLE_ACCOUNT -> {
+                showConfirmationDialog(
+                    title = "",
+                    message = "هل تريد ايقاف حساب الموظف؟",
+                    positiveText = "نعم",
+                    negativeText = "الغاء",
+                    onPositiveClick = { _, _ ->
+                        viewModel.deleteUser(user.id?:"")
                         viewModel.getAllEmployees()
                     }
                 )
             }
-            MenuItem.EDIT_POINTS -> {
-                Toast.makeText(requireActivity(), "Edit Points", Toast.LENGTH_SHORT).show()
-            }
-            else -> {
-                // Handle other menu items if needed
-            }
+            MenuItem.UNKNOWN -> {}
         }
     }
 

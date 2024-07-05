@@ -1,4 +1,4 @@
-package com.galaxy.galaxynet.ui.controlPanel
+package com.galaxy.galaxynet.ui.controlPanel.devicesManagement
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.galaxy.galaxynet.databinding.FragmentAddDeviceTypeBinding
-import com.galaxy.galaxynet.ui.tabs.ip.IpViewModel
 import com.galaxy.util.UiState
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -15,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AddDeviceTypeFragment : BottomSheetDialogFragment() {
     lateinit var binding: FragmentAddDeviceTypeBinding
-    private val viewModel: IpViewModel by viewModels()
+    private val viewModel: DevicesViewModel by viewModels()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

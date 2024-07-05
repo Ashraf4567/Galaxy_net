@@ -88,7 +88,6 @@ class AllTasksFragment : Fragment() {
             handleUISatate(it)
         }
         viewModel.allTasksLiveData.observe(viewLifecycleOwner) {
-            Log.d("test by category", it?.size.toString())
             if (it?.size == 0) {
                 binding.notFoundView.visibility = View.VISIBLE
                 binding.allTasksAdapter.visibility = View.GONE
@@ -110,12 +109,10 @@ class AllTasksFragment : Fragment() {
         binding.allTasksAdapter.adapter = adapter
         adapter.onTakeTaskClickListener = AllTasksAdapter.OnTaskClickListener { task, position ->
             viewModel.takeTask(task.id!!)
-            viewModel.getAllTasksByCategory(selectedTabName)
         }
         adapter.onDeleteTaskClickListener = AllTasksAdapter.OnTaskClickListener { task, position ->
             task.id?.let {
                 viewModel.deleteTask(it)
-                viewModel.getAllTasksByCategory(selectedTabName)
             }
         }
 
@@ -158,9 +155,9 @@ class AllTasksFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.getAllTasksByCategory(selectedTabName)
-    }
+//    override fun onResume() {
+//        super.onResume()
+//        viewModel.getAllTasksByCategory(selectedTabName)
+//    }
 
 }

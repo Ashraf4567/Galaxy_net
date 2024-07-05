@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.galaxy.galaxynet.databinding.FragmentFiltedIPsBinding
+import com.galaxy.galaxynet.ui.controlPanel.devicesManagement.DevicesViewModel
 import com.galaxy.galaxynet.ui.tabs.ip.IPListAdapter
 import com.galaxy.util.Constants
 import com.galaxy.util.UiState
@@ -18,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class FilteredIPsFragment : Fragment() {
 
     lateinit var binding: FragmentFiltedIPsBinding
-    private val viewModel: ControlPanelViewModel by viewModels()
+    private val viewModel: DevicesViewModel by viewModels()
     private val adapter = IPListAdapter(null , false)
 
 

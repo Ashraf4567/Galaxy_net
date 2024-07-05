@@ -60,7 +60,10 @@
         tools:layout="@layout/fragment_manager_profile">
         <action
             android:id="@+id/action_managerProfileFragment_to_addAccountFragment"
-            app:destination="@id/addAccountFragment" />
+            app:destination="@id/addAccountFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            />
         <action
             android:id="@+id/action_managerProfileFragment_to_tasksRequestsFragment"
             app:destination="@id/tasksRequestsFragment" />
@@ -85,6 +88,9 @@
         <action
             android:id="@+id/action_managerProfileFragment_to_sendNotificationFragment"
             app:destination="@id/sendNotificationFragment" />
+        <action
+            android:id="@+id/action_managerProfileFragment_to_transactionsHistoryFragment"
+            app:destination="@id/transactionsHistoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/addAccountFragment"
@@ -146,10 +152,14 @@
         android:id="@+id/employeesListFragment"
         android:name="com.galaxy.galaxynet.ui.controlPanel.employeesManagement.EmployeesListFragment"
         android:label="fragment_employees_list"
-        tools:layout="@layout/fragment_employees_list" />
+        tools:layout="@layout/fragment_employees_list" >
+        <action
+            android:id="@+id/action_employeesListFragment_to_editPointsFragment"
+            app:destination="@id/editPointsFragment" />
+    </fragment>
     <dialog
         android:id="@+id/addDeviceTypeFragment"
-        android:name="com.galaxy.galaxynet.ui.controlPanel.AddDeviceTypeFragment"
+        android:name="com.galaxy.galaxynet.ui.controlPanel.devicesManagement.AddDeviceTypeFragment"
         android:label="fragment_add_device_type"
         tools:layout="@layout/fragment_add_device_type" />
     <dialog
@@ -164,12 +174,15 @@
     </dialog>
     <fragment
         android:id="@+id/devicesListFragment"
-        android:name="com.galaxy.galaxynet.ui.controlPanel.DevicesListFragment"
+        android:name="com.galaxy.galaxynet.ui.controlPanel.devicesManagement.DevicesListFragment"
         android:label="fragment_devices_list"
         tools:layout="@layout/fragment_devices_list" >
         <action
             android:id="@+id/action_devicesListFragment_to_filteredIPsFragment"
             app:destination="@id/filteredIPsFragment" />
+        <action
+            android:id="@+id/action_devicesListFragment_to_editDeviceNameFragment2"
+            app:destination="@id/editDeviceNameFragment2" />
     </fragment>
     <dialog
         android:id="@+id/sendNotificationFragment"
@@ -185,4 +198,29 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
+    <dialog
+        android:id="@+id/editPointsFragment"
+        android:name="com.galaxy.galaxynet.ui.controlPanel.employeesManagement.EditPointsFragment"
+        android:label="fragment_edit_points"
+        tools:layout="@layout/fragment_edit_points">
+        <argument
+            android:name="userId"
+            app:argType="string"
+            app:nullable="true" />
+    </dialog>
+    <dialog
+        android:id="@+id/editDeviceNameFragment2"
+        android:name="com.galaxy.galaxynet.ui.controlPanel.devicesManagement.EditDeviceNameFragment"
+        android:label="fragment_edit_device_name"
+        tools:layout="@layout/fragment_edit_device_name">
+        <argument
+            android:name="oldDeviceName"
+            app:argType="string"
+            app:nullable="true" />
+    </dialog>
+    <fragment
+        android:id="@+id/transactionsHistoryFragment"
+        android:name="com.galaxy.galaxynet.ui.controlPanel.trasactionHistory.TransactionsHistoryFragment"
+        android:label="fragment_transactions_history"
+        tools:layout="@layout/fragment_transactions_history" />
 </navigation>

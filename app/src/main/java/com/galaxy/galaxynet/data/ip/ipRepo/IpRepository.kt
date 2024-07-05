@@ -1,4 +1,4 @@
-package com.galaxy.galaxynet.data.ipRepo
+package com.galaxy.galaxynet.data.ip.ipRepo
 
 import com.galaxy.galaxynet.model.DeviceType
 import com.galaxy.galaxynet.model.Ip
@@ -21,5 +21,6 @@ interface IpRepository {
     suspend fun decreaseDeviceNumber(deviceName: String): TransactionResult
     suspend fun updateIP(id: String, updatedIp: Ip, oldDeviceName: String): TransactionResult
     suspend fun getIpsByDevice(deviceName: String): List<Ip>
+    suspend fun changeDeviceName(oldDeviceName: String, newDeviceName: String): TransactionResult
 
 }

@@ -7,7 +7,7 @@
 
         <variable
             name="vm"
-            type="com.galaxy.galaxynet.ui.tabs.ip.IpViewModel" />
+            type="com.galaxy.galaxynet.ui.controlPanel.devicesManagement.DevicesViewModel" />
 
         <import type="android.view.View" />
 
@@ -20,7 +20,7 @@
         android:background="@color/white"
         android:layoutDirection="rtl"
         android:padding="13dp"
-        tools:context=".ui.controlPanel.AddDeviceTypeFragment">
+        tools:context=".ui.controlPanel.devicesManagement.AddDeviceTypeFragment">
 
         <TextView
             android:id="@+id/please_add_deviceType_text"

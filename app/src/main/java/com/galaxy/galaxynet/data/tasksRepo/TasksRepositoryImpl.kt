@@ -8,7 +8,11 @@ import com.galaxy.galaxynet.model.User
 import com.galaxy.util.AddTaskResult
 import com.galaxy.util.TransactionResult
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -17,6 +21,7 @@ class TasksRepositoryImpl @Inject constructor(
 ) :
     TasksRepository {
     private val usersCollection = firestore.collection(User.COLLECTION_NAME)
+    private val tasksCollection = firestore.collection(Task.COLLECTION_NAME)
 
 
     override suspend fun addTask(task: Task): AddTaskResult {
@@ -57,7 +62,7 @@ class TasksRepositoryImpl @Inject constructor(
             val taskDocument = querySnapshot.documents.first()
             val result = taskDocument.reference.set(updatedTask.copy(id = id))
                 .await() // Preserve original ID
-            TransactionResult.Success()
+            TransactionResult.Success
 
         } catch (e: Exception) {
             TransactionResult.Failure(e)
@@ -89,7 +94,7 @@ class TasksRepositoryImpl @Inject constructor(
             taskDocument.reference.set(updatedTask).await()
 
             // Return the updated task
-            TransactionResult.Success()
+            TransactionResult.Success
 
         } catch (e: Exception) {
             Log.d("test Update task", " error task ${e.localizedMessage}")
@@ -122,7 +127,7 @@ class TasksRepositoryImpl @Inject constructor(
             taskDocument.reference.set(updatedTask).await()
 
             // Return the updated task
-            TransactionResult.Success()
+            TransactionResult.Success
 
         } catch (e: Exception) {
             Log.d("test Update task", " error task ${e.localizedMessage}")
@@ -147,7 +152,7 @@ class TasksRepositoryImpl @Inject constructor(
             val taskDocument = querySnapshot.documents.first()
             taskDocument.reference.delete().await()
 
-            return TransactionResult.Success()
+            return TransactionResult.Success
 
 
         } catch (e: Exception) {
@@ -156,28 +161,28 @@ class TasksRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAllTasksByCategory(category: String): List<Task?>? {
-        try {
-            val querySnapshot = firestore.collection(Task.COLLECTION_NAME)
-                .whereEqualTo("taskAcceptanceStatus", TaskAcceptanceStatus.ACCEPTED.state)
-                .whereEqualTo("taskCategory", category)
-                .orderBy("dateTime", Query.Direction.DESCENDING)
-                .get()
-                .await()
+    override suspend fun getAllTasksByCategory(category: String): Flow<List<Task>> = callbackFlow {
+        val listenerRegistration: ListenerRegistration = tasksCollection
+            .whereEqualTo("taskAcceptanceStatus", TaskAcceptanceStatus.ACCEPTED.state)
+            .whereEqualTo("taskCategory", category)
+            .orderBy("dateTime", Query.Direction.DESCENDING)
+            .addSnapshotListener { querySnapshot, e ->
+                if (e != null) {
+                    Log.e("test Get tasks error", "Error getting tasks: $e")
+                    // Send an empty list on error
+                    trySend(emptyList<Task>()).isSuccess
+                    return@addSnapshotListener
+                }
 
-            val tasks = mutableListOf<Task>()
-            for (document in querySnapshot.documents) {
-                val task = document.toObject(Task::class.java)!!
-                Log.e("test Get tasks suc", "${task.creatorName}")
-                tasks.add(task)
+                val tasks = querySnapshot?.documents?.mapNotNull { document ->
+                    document.toObject(Task::class.java)
+                } ?: emptyList()
+
+                trySend(tasks).isSuccess
             }
 
-            return tasks
-        } catch (e: Exception) {
-            Log.e("test Get tasks error", "Error getting tasks: $e")
-            // Handle errors (e.g., show an error message)
-            return emptyList() // Return an empty list on error
-        }
+        // Cleanup the listener when the flow is cancelled
+        awaitClose { listenerRegistration.remove() }
     }
 
     override suspend fun getTasksByCompletionState(state: String): List<Task?>? {
@@ -260,7 +265,7 @@ class TasksRepositoryImpl @Inject constructor(
             userRef.update("points", updatedPoints).await()
             userRef.update("numberOfCompletedTasks", updatedNumberOfCompletedTasks).await()
 
-            TransactionResult.Success()
+            TransactionResult.Success
         } catch (e: Exception) {
             TransactionResult.Failure(e)
         }

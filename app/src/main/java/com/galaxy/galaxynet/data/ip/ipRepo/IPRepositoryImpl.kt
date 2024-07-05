@@ -1,5 +1,6 @@
-package com.galaxy.galaxynet.data.ipRepo
+package com.galaxy.galaxynet.data.ip.ipRepo
 
+import android.net.ConnectivityManager
 import android.util.Log
 import com.galaxy.galaxynet.model.DeviceType
 import com.galaxy.galaxynet.model.Ip
@@ -10,7 +11,9 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class IPRepositoryImpl @Inject constructor(
-    val firestore: FirebaseFirestore
+    val firestore: FirebaseFirestore,
+    val offlineDataSource: OfflineIpRepo,
+    val connectivityManager: ConnectivityManager
 ) : IpRepository {
 
     private val deviceTypeCollection = firestore.collection(DeviceType.DEVICE_TYPE_COLLECTION_NAME)
@@ -26,7 +29,7 @@ class IPRepositoryImpl @Inject constructor(
             } else {
                 // Add the new device type
                 deviceTypeCollection.add(DeviceType(type = type)).await()
-                return TransactionResult.Success() // Return Success directly
+                return TransactionResult.Success // Return Success directly
             }
         } catch (e: Exception) {
             Log.e("test add device type", e.message.toString())
@@ -55,7 +58,7 @@ class IPRepositoryImpl @Inject constructor(
                 }
             }
 
-            TransactionResult.Success()
+            TransactionResult.Success
         } catch (e: Exception) {
             Log.e("Update Device Counters", "Error updating device counters: $e")
             TransactionResult.Failure(e)
@@ -128,7 +131,7 @@ class IPRepositoryImpl @Inject constructor(
                 increaseDeviceNumber(ip.deviceType.toString())
 
 
-                TransactionResult.Success() // Return Success directly
+                TransactionResult.Success // Return Success directly
 
 
             }
@@ -180,7 +183,7 @@ class IPRepositoryImpl @Inject constructor(
                 updateParentIp(originalIpValue!!, updatedIp.value!!)
             }
 
-            TransactionResult.Success()
+            TransactionResult.Success
 
         } catch (e: Exception) {
             Log.e("updateIP", "Error updating IP: $e")
@@ -223,7 +226,7 @@ class IPRepositoryImpl @Inject constructor(
             // Update the document with the new counter value
             deviceTypeDocument.reference.update("counter", newCounter).await()
 
-            TransactionResult.Success()
+            TransactionResult.Success
 
         } catch (e: Exception) {
             TransactionResult.Failure(e)
@@ -305,6 +308,53 @@ class IPRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun changeDeviceName(oldDeviceName: String, newDeviceName: String): TransactionResult {
+        return try {
+
+            val existingTypeQuery = deviceTypeCollection.whereEqualTo("type", newDeviceName)
+            val existingTypeSnapshot = existingTypeQuery.get().await()
+
+            if (existingTypeSnapshot.documents.isNotEmpty()){
+                return TransactionResult.Failure(Exception("Device type already exists"))
+            }
+
+            // Step 1: Fetch the DeviceType document with the old device name
+            val deviceTypeQuerySnapshot = deviceTypeCollection
+                .whereEqualTo("type", oldDeviceName)
+                .get()
+                .await()
+
+            if (deviceTypeQuerySnapshot.documents.isEmpty()) {
+                // DeviceType document not found
+                return TransactionResult.Failure(Exception("DeviceType with type $oldDeviceName not found"))
+            }
+
+            // Get the DeviceType document
+            val deviceTypeDocument = deviceTypeQuerySnapshot.documents.first()
+
+            // Step 2: Update the DeviceType document with the new device name
+            deviceTypeDocument.reference.update("type", newDeviceName).await()
+
+            // Step 3: Fetch all IP documents that reference the old device name
+            val ipQuerySnapshot = ipsCollection
+                .whereEqualTo("deviceType", oldDeviceName)
+                .get()
+                .await()
+
+            // Step 4: Update each IP document to reference the new device name
+            for (ipDocument in ipQuerySnapshot.documents) {
+                ipDocument.reference.update("deviceType", newDeviceName).await()
+            }
+
+            TransactionResult.Success
+        } catch (e: Exception) {
+            Log.e("Change Device Name", "Error changing device name: $e")
+            TransactionResult.Failure(e)
+        }
+    }
+
+
+
 
     override suspend fun deleteIp(ip: Ip, value: String): TransactionResult {
         return try {
@@ -323,7 +373,7 @@ class IPRepositoryImpl @Inject constructor(
             }
             decreaseDeviceNumber(ip.deviceType!!)
 
-            TransactionResult.Success()
+            TransactionResult.Success
         } catch (e: Exception) {
             Log.e("Delete IP", "Error deleting IP: $e")
             TransactionResult.Failure(e)
@@ -354,7 +404,7 @@ class IPRepositoryImpl @Inject constructor(
             // Update the document with the new counter value
             deviceTypeDocument.reference.update("counter", newCounter).await()
 
-            TransactionResult.Success()
+            TransactionResult.Success
 
         } catch (e: Exception) {
             TransactionResult.Failure(e)

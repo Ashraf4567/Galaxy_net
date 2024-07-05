@@ -19,6 +19,8 @@ import com.galaxy.util.TransactionResult
 import com.galaxy.util.UiState
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import java.util.UUID
 import javax.inject.Inject
@@ -113,13 +115,12 @@ class TasksViewModel @Inject constructor(
                                 )
                         }
                         uIstate.postValue(UiState.SUCCESS)
-                        Log.d("test Add task", "task added successfully")
 
                     }
 
                     is AddTaskResult.Failure -> {
                         val exception = result.exception.localizedMessage
-                        uIstate.postValue(UiState.SUCCESS)
+                        uIstate.postValue(UiState.ERROR)
                         Log.d("test Add task ", exception ?: "")
                     }
                 }
@@ -149,16 +150,16 @@ class TasksViewModel @Inject constructor(
                 when (result) {
                     is TransactionResult.Success -> {
                         messageLiveData.postValue("تم التعديل علي المهمه والاضافه بنجاح")
-                        val tokens = usersRepository.getAllTokens()
-                        tokens.forEach {
-                            if (!it.id.equals(auth.currentUser?.uid))
-                                PushNotificationService
-                                    .sendNotificationToDevice(
-                                        it.tokenValue ?: "",
-                                        "مهمه جديده",
-                                        " تم تعديل مهمه جديده بواسطه ${sessionManager.getUserData()?.name}"
-                                    )
-                        }
+//                        val tokens = usersRepository.getAllTokens()
+//                        tokens.forEach {
+//                            if (!it.id.equals(auth.currentUser?.uid))
+//                                PushNotificationService
+//                                    .sendNotificationToDevice(
+//                                        it.tokenValue ?: "",
+//                                        "مهمه جديده",
+//                                        " تم تعديل مهمه جديده بواسطه ${sessionManager.getUserData()?.name}"
+//                                    )
+//                        }
                         uIstate.postValue(UiState.SUCCESS)
                         Log.d("test Update task", "task updated successfully")
                     }
@@ -194,16 +195,16 @@ class TasksViewModel @Inject constructor(
 
     fun getAllTasksByCategory(category: String) {
         uIstate.postValue(UiState.LOADING)
-        viewModelScope.launch {
-            try {
-                val result = tasksRepository.getAllTasksByCategory(category)
-                allTasksLiveData.postValue(result as MutableList<Task?>?)
-                uIstate.postValue(UiState.SUCCESS)
-            } catch (e: Exception) {
-                uIstate.postValue(UiState.ERROR)
-                Log.d("test get Tasks", e.localizedMessage ?: "something went wrong")
-            }
-
+        viewModelScope.launch(Dispatchers.IO) {
+            tasksRepository.getAllTasksByCategory(category)
+                .catch { e ->
+                    uIstate.postValue(UiState.ERROR)
+                    Log.e("test get Tasks", e.localizedMessage ?: "Something went wrong")
+                }
+                .collect { result ->
+                    allTasksLiveData.postValue(result.toMutableList())
+                    uIstate.postValue(UiState.SUCCESS)
+                }
         }
     }
 
@@ -246,16 +247,16 @@ class TasksViewModel @Inject constructor(
                 when (result) {
                     is TransactionResult.Success -> {
                         messageLiveData.postValue("تم قبول المهمه بنجاح")
-                        val tokens = usersRepository.getAllTokens()
-                        tokens.forEach {
-                            PushNotificationService
-                                .sendNotificationToDevice(
-                                    it.tokenValue ?: "",
-                                    "قبول طلب",
-                                    " تم قبول طلب اضافه مهمه بواسطه ${sessionManager.getUserData()?.name}"
-                                )
-
-                        }
+//                        val tokens = usersRepository.getAllTokens()
+//                        tokens.forEach {
+//                            PushNotificationService
+//                                .sendNotificationToDevice(
+//                                    it.tokenValue ?: "",
+//                                    "قبول طلب",
+//                                    " تم قبول طلب اضافه مهمه بواسطه ${sessionManager.getUserData()?.name}"
+//                                )
+//
+//                        }
                         uIstate.postValue(UiState.SUCCESS)
                     }
 
@@ -346,14 +347,14 @@ class TasksViewModel @Inject constructor(
                     is TransactionResult.Success -> {
                         messageLiveData.postValue("تم اكمال المهمه")
                         val tokens = usersRepository.getAllTokens()
-                        tokens.forEach {
-                            PushNotificationService
-                                .sendNotificationToDevice(
-                                    it.tokenValue ?: "",
-                                    "اكمال مهمة ${task.creatorName}",
-                                    " تم اكمال مهمه جديده بواسطه ${sessionManager.getUserData()?.name}"
-                                )
-                        }
+//                        tokens.forEach {
+//                            PushNotificationService
+//                                .sendNotificationToDevice(
+//                                    it.tokenValue ?: "",
+//                                    "اكمال مهمة ${task.creatorName}",
+//                                    " تم اكمال مهمه جديده بواسطه ${sessionManager.getUserData()?.name}"
+//                                )
+//                        }
                         uIstate.postValue(UiState.SUCCESS)
                     }
                 }

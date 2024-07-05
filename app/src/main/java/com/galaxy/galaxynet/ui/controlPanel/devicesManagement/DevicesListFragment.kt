@@ -1,13 +1,12 @@
-package com.galaxy.galaxynet.ui.controlPanel
+package com.galaxy.galaxynet.ui.controlPanel.devicesManagement
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.galaxy.galaxynet.R
 import com.galaxy.galaxynet.databinding.FragmentDevicesListBinding
@@ -19,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class DevicesListFragment : Fragment() {
     lateinit var binding: FragmentDevicesListBinding
-    private val viewModel: ControlPanelViewModel by viewModels()
+    private val viewModel: DevicesViewModel by activityViewModels()
     private val adapter = DeviceListAdapter(null)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,11 +52,17 @@ class DevicesListFragment : Fragment() {
             viewModel.updateStatistics()
         }
 
-        adapter.onDeviceClickListener = DeviceListAdapter.OnDeviceClickListener{device: DeviceType ->
+        adapter.onDeviceClickListener = DeviceListAdapter.OnDeviceClickListener{ device: DeviceType ->
             // navigate to filtered ips fragment with device name
             val bundle = Bundle()
             bundle.putString(Constants.DEVICE_NAME_KEY, device.type)
             findNavController().navigate(R.id.action_devicesListFragment_to_filteredIPsFragment , bundle)
+        }
+
+        adapter.onDeviceLongClickListener = DeviceListAdapter.OnDeviceClickListener{ device: DeviceType ->
+            val bundle = Bundle()
+            bundle.putString(Constants.OLD_DEVICE_NAME_KEY, device.type)
+            findNavController().navigate(R.id.action_devicesListFragment_to_editDeviceNameFragment2 , bundle)
         }
 
     }

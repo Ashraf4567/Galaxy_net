@@ -48,6 +48,12 @@ class AuthViewModel @Inject constructor(
 
     val message = MutableLiveData<String>()
 
+    val hasIpListAccess = MutableLiveData<Boolean>(false) // Initial state is false
+
+    fun onHaveAccessToIpListChanged(isChecked: Boolean) {
+        hasIpListAccess.value = isChecked
+    }
+
     fun checkUserType() {
         if (sessionManager.getUserData()?.type.equals(User.MANAGER)) {
             isManager.postValue(true)
@@ -80,8 +86,9 @@ class AuthViewModel @Inject constructor(
                 // Check if authentication was successful
                 if (authResult.user != null) {
                     usersRepository.getAllUsers().forEach {
-                        if (it.id == authResult.user?.uid) {
-                            val user = User(name = "Ashraf", email = email.value, id = authResult.user?.uid)
+                        Log.d("test get all users", it.toString())
+                        if (it.id == authResult.user?.uid && it.active == true) {
+                            val user = User(name = userName.value, email = email.value, id = authResult.user?.uid , active = true)
                             isFound = true
                             getUserData(user.id)
                         }
@@ -119,8 +126,7 @@ class AuthViewModel @Inject constructor(
                             // Handle successful account creation
 
                             val userId = task.result.user?.uid
-                            val user = User(userId, userName.value, email.value, userType, 0)
-                            Log.d("test save data", user.toString())
+                            val user = User(userId, userName.value, email.value, userType, 0 , haveAccessToIpList = hasIpListAccess.value!! , active = true)
                             addUser(user)
                         } else {
                             // Handle failed account creation
@@ -147,16 +153,15 @@ class AuthViewModel @Inject constructor(
                     return@launch
                 }
                 val result = usersRepository.getAllUsers()
-                result.forEach {
-                    if (it.id == userId) {
-                        isExist.postValue(true)
-                        return@launch
-                    }else{
-                        isExist.postValue(false)
-                    }
+                val currentUser = result.find { it.id == userId }
+                Log.d("test get Current user", currentUser.toString())
+                if (currentUser?.active == true) {
+                    isExist.postValue(true)
+                } else {
+                    isExist.postValue(false)
                 }
             } catch (e: Exception) {
-                Log.e("test get all users", e.message.toString())
+                Log.d("test get all users", e.message.toString())
 
             }
         }

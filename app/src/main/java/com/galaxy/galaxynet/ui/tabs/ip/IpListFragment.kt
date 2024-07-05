@@ -20,6 +20,7 @@ import com.galaxy.util.Constants
 import com.galaxy.util.UiState
 import com.galaxy.util.showConfirmationDialog
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import java.net.URLEncoder
 import java.util.Stack
 
@@ -43,7 +44,13 @@ class IpListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getMainIPList()
+        if (viewModel.sessionManager.getUserData()?.haveAccessToIpList != false){
+            viewModel.getMainIPList()
+        }else{
+            binding.noPermission.visibility = View.VISIBLE
+            binding.addIPBtn.visibility = View.GONE
+        }
+
         initViews()
         initObservers()
     }
@@ -138,16 +145,12 @@ class IpListFragment : Fragment() {
         }
 
         adapter.onEditIpClickListener = IPListAdapter.OnIpClickListener { ip, position ->
-            if (viewModel.sessionManager.getUserData()?.type.equals(com.galaxy.galaxynet.model.User.MANAGER)) {
-                val intent = Intent(requireActivity(), EditIPActivity::class.java).apply {
-                    putExtra(Constants.IP_ID, ip.id)
-                    Log.d("test id", ip.id.toString())
-                    startActivity(this)
-                }
-            } else {
-                Toast.makeText(requireActivity(), "لايوجد لديك صلاحيه التعديل", Toast.LENGTH_SHORT)
-                    .show()
+            val intent = Intent(requireActivity(), EditIPActivity::class.java).apply {
+                putExtra(Constants.IP_ID, ip.id)
+                Log.d("test id", ip.id.toString())
+                startActivity(this)
             }
+
 
         }
 
@@ -172,6 +175,11 @@ class IpListFragment : Fragment() {
         })
 
         binding.swiperefresh.setOnRefreshListener {
+            if (viewModel.sessionManager.getUserData()?.haveAccessToIpList == false){
+                binding.swiperefresh.isRefreshing = false
+                return@setOnRefreshListener
+            }
+
             if (clickedIpStack.isNotEmpty()) {
                 val sub = clickedIpStack.peek()
                 viewModel.getSubIpList(sub.value!!)
@@ -185,6 +193,10 @@ class IpListFragment : Fragment() {
             }
 
 
+        }
+        binding.printerBtn.setOnClickListener {
+            val filePath = File(context?.getExternalFilesDir(null), "ip_list.pdf")
+            viewModel.createPdfFromIpListHTML("ip_list.pdf")
         }
 
     }

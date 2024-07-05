@@ -7,6 +7,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.galaxy.galaxynet.model.Ip
 
 fun Fragment.hideKeyboard() {
     view?.let { activity?.hideKeyboard(it) }

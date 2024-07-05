@@ -1,19 +1,37 @@
 package com.galaxy.galaxynet.ui.tabs.ip
 
+import android.content.Context
+import android.os.Environment
+import java.io.File
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.galaxy.galaxynet.data.ipRepo.IpRepository
+import com.galaxy.galaxynet.data.ip.ipRepo.IpRepository
 import com.galaxy.galaxynet.data.local.SessionManager
 import com.galaxy.galaxynet.model.Ip
 import com.galaxy.util.SingleLiveEvent
 import com.galaxy.util.TransactionResult
 import com.galaxy.util.UiState
+import com.itextpdf.html2pdf.HtmlConverter
+import com.itextpdf.io.font.PdfEncodings
+import com.itextpdf.kernel.font.PdfFontFactory
+import com.itextpdf.kernel.geom.PageSize
+import com.itextpdf.kernel.pdf.PdfDocument
+import com.itextpdf.layout.element.Paragraph
+import com.itextpdf.layout.element.Table
+import com.itextpdf.layout.element.Text
+import com.itextpdf.layout.properties.BaseDirection
+import com.itextpdf.layout.properties.Property
+import com.itextpdf.layout.properties.TextAlignment
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.FileOutputStream
 import java.util.UUID
 import javax.inject.Inject
 
@@ -100,38 +118,6 @@ class IpViewModel @Inject constructor(
         }
     }
 
-    fun addDeviceType() {
-        isLoading.postValue(true)
-        viewModelScope.launch {
-            try {
-                if (!deviceType.value.isNullOrBlank()) {
-                    val result = ipsRepository.addDeviceType(deviceType.value!!)
-                    when (result) {
-                        is TransactionResult.Failure -> {
-                            uiState.postValue(UiState.ERROR)
-                            if (result.exception?.message.equals("Device type already exists")) {
-                                messageLiveData.postValue("نوع الجهاز موجود بالفعل")
-                            }
-                            uiState.postValue(UiState.ERROR)
-
-                            Log.e("test add device type", result.exception?.message ?: "")
-                        }
-
-                        is TransactionResult.Success -> {
-                            uiState.postValue(UiState.SUCCESS)
-                        }
-                    }
-                    return@launch
-                }
-
-            } catch (e: Exception) {
-                uiState.postValue(UiState.ERROR)
-                Log.e("test add device type", e.message.toString())
-            } finally {
-                isLoading.postValue(false)
-            }
-        }
-    }
 
     fun gatAllDevicesTypes() {
         viewModelScope.launch {
@@ -189,6 +175,145 @@ class IpViewModel @Inject constructor(
 
 
     }
+
+    private fun generateHtmlTable(): String {
+        val stringBuilder = StringBuilder()
+        stringBuilder.append("""
+        <html>
+        <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            table, th, td {
+                border: 1px solid black;
+            }
+            th, td {
+                padding: 10px;
+                text-align: left;
+            }
+        </style>
+        </head>
+        <body>
+        <table>
+            <tr>
+                <th>Value</th>
+                <th>Device Type</th>
+                <th>Keyword</th>
+            </tr>
+    """.trimIndent())
+
+        for (ip in ipList.value!!) {
+            stringBuilder.append("<tr>")
+            stringBuilder.append("<td>${ip?.value ?: ""}</td>")
+            stringBuilder.append("<td>${ip?.deviceType ?: ""}</td>")
+            stringBuilder.append("<td>${ip?.keyword ?: ""}</td>")
+            stringBuilder.append("</tr>")
+        }
+
+        stringBuilder.append("""
+        </table>
+        </body>
+        </html>
+    """.trimIndent())
+
+        return stringBuilder.toString()
+    }
+
+
+
+    private fun generatePdfFromHtml(htmlContent: String, fileName: String) {
+        val pdfFile = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "$fileName.pdf")
+        FileOutputStream(pdfFile).use { outputStream ->
+//            val converterProperties = ConverterProperties()
+//            val fontProvider = DefaultFontProvider(false, false, false)
+
+            // Add the custom font to the font provider
+//            val fontProgram: FontProgram =
+//                FontProgramFactory.createFont(fontPath)
+//            fontProvider.addFont(fontProgram)
+//
+//            converterProperties.fontProvider = fontProvider
+
+            HtmlConverter.convertToPdf(htmlContent, outputStream)
+
+        }
+    }
+
+    fun createPdfFromIpListHTML(fileName: String) {
+        viewModelScope.launch(Dispatchers.Default) {
+            val htmlContent = withContext(Dispatchers.Default){
+                generateHtmlTable()
+            }
+            withContext(Dispatchers.IO) {
+                generatePdfFromHtml(htmlContent, fileName)
+            }
+        }
+
+    }
+
+    fun createPdf(context: Context) {
+
+        val fileName = "ip lis file.pdf"
+        val externalStorageDir =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
+        if (!externalStorageDir.exists()) {
+            externalStorageDir.mkdirs()
+        }
+        val outputFile = File(externalStorageDir, fileName)
+
+        val pdfWriter = com.itextpdf.kernel.pdf.PdfWriter(outputFile)
+
+        val pdfDocument = PdfDocument(pdfWriter)
+        val document = com.itextpdf.layout.Document(pdfDocument, PageSize.A4)
+        pdfDocument.addNewPage()
+
+        // TODO: Arabic font
+
+        val assetManager = context.assets
+        val arabicFontPath = "rubik_light.ttf"
+        val fontStream = assetManager.open(arabicFontPath)
+        val fontBytes = fontStream.readBytes()
+        val arabicFont = PdfFontFactory.createFont(fontBytes, PdfEncodings.IDENTITY_H)
+
+        document.setProperty(Property.FONT, arabicFont)
+
+
+        val title = Paragraph("IP List")
+            .setBold()
+            .setFontSize(20f)
+        document.add(title)
+        // Create a table with appropriate number of columns
+        val table = Table(3 , true)
+        table.setFont(arabicFont)
+        table.setBaseDirection(BaseDirection.RIGHT_TO_LEFT)
+
+        table.addCell("IP")
+        table.addCell("Device Type")
+        table.addCell("Keyword")
+
+        val testArabic = Paragraph("هذا نص عربي")
+        ipList.value?.forEach {
+            it?.let {
+                table.addCell(Paragraph(it.value).setFont(arabicFont).setTextAlignment(TextAlignment.RIGHT))
+                table.addCell(testArabic.add(Text(it.deviceType)).setFont(arabicFont).setTextAlignment(TextAlignment.RIGHT))
+                table.addCell(Paragraph(it.keyword).setFont(arabicFont).setTextAlignment(TextAlignment.RIGHT))
+            }
+
+        }
+        document.add(table)
+
+
+        document.close()
+
+        // Optionally, display a message or toast to guide the user to the location of the PDF
+        Toast.makeText(context, "تم حفظ الملف في : ${outputFile.absolutePath}", Toast.LENGTH_SHORT)
+            .show()
+        Log.d("test create pdf", "path : ${outputFile.absolutePath}")
+    }
+
 
     fun getSubIpList(parentIP: String) {
         uiState.postValue(UiState.LOADING)

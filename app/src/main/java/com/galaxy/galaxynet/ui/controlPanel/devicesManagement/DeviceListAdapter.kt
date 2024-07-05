@@ -1,4 +1,4 @@
-package com.galaxy.galaxynet.ui.controlPanel
+package com.galaxy.galaxynet.ui.controlPanel.devicesManagement
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -34,9 +34,14 @@ class DeviceListAdapter(var devicesList: List<DeviceType?>?) :
         holder.item.root.setOnClickListener {
             onDeviceClickListener?.onClick(ip)
         }
+        holder.item.root.setOnLongClickListener {
+            onDeviceLongClickListener?.onClick(ip)
+            true
+        }
     }
 
     var onDeviceClickListener: OnDeviceClickListener? = null
+    var onDeviceLongClickListener: OnDeviceClickListener? = null
     fun interface OnDeviceClickListener {
         fun onClick(device: DeviceType)
     }

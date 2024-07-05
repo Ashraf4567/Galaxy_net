@@ -1,15 +1,14 @@
-package com.galaxy.galaxynet.ui.controlPanel
+package com.galaxy.galaxynet.ui.controlPanel.employeesManagement
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.galaxy.galaxynet.R
 import com.galaxy.galaxynet.databinding.ItemEmployeeBinding
 import com.galaxy.galaxynet.model.User
+import com.galaxy.galaxynet.ui.controlPanel.MenuItem
 
 
 class EmployeesAdapter(var employeesList: MutableList<User?>?) :
@@ -21,39 +20,47 @@ class EmployeesAdapter(var employeesList: MutableList<User?>?) :
         fun bind(employee: User?, listener: OnEmployeeClickListener) {
             item.user = employee
             optionsMenu.setOnClickListener {
-                popMenu(it, employee?.id ?: "" , listener)
+                popMenu(it, employee?:User() , listener)
+            }
+            if (employee?.active == true){
+                item.activeState.background = item.root.context.getDrawable(R.color.completed_task_color)
+            }
+            if (employee?.active == false){
+                item.activeState.background = item.root.context.getDrawable(R.color.red)
             }
         }
 
-        private fun popMenu(v: View, userId: String , onOptionSelected: OnEmployeeClickListener) {
+        private fun popMenu(v: View, user: User , onOptionSelected: OnEmployeeClickListener) {
             val popupMenu = PopupMenu(v.context, v)
             popupMenu.inflate(R.menu.options_menu)
+            val menu = popupMenu.menu
+            if (user.active == true){
+                menu.findItem(R.id.activeAccount).isVisible = false
+            }
+            if (user.active == false){
+                menu.findItem(R.id.disableAccount).isVisible = false
+            }
+
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 val menuItemId = menuItem.itemId
                 val menuItemEnum = when (menuItemId) {
-                    R.id.deleteAccount -> MenuItem.DELETE
                     R.id.edit_points -> MenuItem.EDIT_POINTS
+                    R.id.activeAccount -> MenuItem.ACTIVE_ACCOUNT
+                    R.id.disableAccount -> MenuItem.DISABLE_ACCOUNT
                     else -> MenuItem.UNKNOWN
                 }
-                onOptionSelected.onOptionSelected(userId, menuItemEnum)
+                onOptionSelected.onOptionSelected(user, menuItemEnum)
                 true
             }
             popupMenu.show()
             val popUp = PopupMenu::class.java.getDeclaredField("mPopup")
             popUp.isAccessible = true
-            val menu = popUp.get(popupMenu)
-            menu.javaClass.getDeclaredMethod("setForceShowIcon", Boolean::class.java)
-                .invoke(menu, true)
+            val menuPopHelper = popUp.get(popupMenu)
+            menuPopHelper.javaClass.getDeclaredMethod("setForceShowIcon", Boolean::class.java)
+                .invoke(menuPopHelper, true)
         }
 
-//        private fun onOptionSelected(userId: String, menuItem: MenuItem) {
-//            // Callback to fragment with selected item information
-//            Log.d("EmployeesAdapter", "Option selected: $menuItem")
-//            (itemView.context as? AppCompatActivity)?.let { activity ->
-//                val listener = activity as? OnEmployeeClickListener
-//                listener?.onOptionSelected(userId, menuItem)
-//            }
-//        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -75,7 +82,7 @@ class EmployeesAdapter(var employeesList: MutableList<User?>?) :
 
     interface OnEmployeeClickListener {
         fun onEmployeeClick(employee: User?)
-        fun onOptionSelected(userId: String, menuItem: MenuItem)
+        fun onOptionSelected(user: User, menuItem: MenuItem)
     }
 
     fun submitList(list: List<User?>?) {

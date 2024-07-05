@@ -13,15 +13,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageButton
+            android:id="@+id/printer_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_printer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             android:background="@color/white_gray"
             android:gravity="center"
             android:iconifiedByDefault="false"
             android:searchIcon="@drawable/ic_search"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/printer_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -118,6 +127,20 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/noPermission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ليس لديك صلاحيه الوصول للقائمه"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/TextProfileMenu"
+            android:visibility="gone"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

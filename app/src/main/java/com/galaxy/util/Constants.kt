@@ -16,6 +16,9 @@ class Constants {
         const val TOPIC = "/topics/myTopic2"
 
         const val DEVICE_NAME_KEY = "deviceName"
+        const val USER_ID_KEY = "userId"
+        const val OLD_DEVICE_NAME_KEY = "oldDeviceName"
+        const val CLIENT_ID = "1094565738194-g9rr2j9bvhrfnpde95o5fup1alctt3o6.apps.googleusercontent.com"
 
     }
 }

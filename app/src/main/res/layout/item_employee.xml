@@ -73,6 +73,28 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/numberOfCompletedTasks"
                 tools:text="اجمالي النقاط: 25" />
+            
+            <TextView
+                android:id="@+id/email"
+                style="@style/TextProfileMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{`البريد الالكتروني : ` +user.email}"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/type"
+                tools:text="test@gmail.com"
+                />
+            
+            <ImageView
+                android:id="@+id/activeState"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:background="@color/completed_task_color"
+                />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

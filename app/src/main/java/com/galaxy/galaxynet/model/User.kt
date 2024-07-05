@@ -6,7 +6,9 @@ data class User(
     val email: String? = null,
     val type: String? = null,
     val points: Int? = 0,
-    val numberOfCompletedTasks: Int = 0
+    val numberOfCompletedTasks: Int = 0,
+    val haveAccessToIpList: Boolean = false,
+    val active: Boolean? = null
 ){
     companion object {
         const val MANAGER = "مدير"

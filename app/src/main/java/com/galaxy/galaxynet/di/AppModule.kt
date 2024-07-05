@@ -2,8 +2,16 @@ package com.galaxy.galaxynet.di
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.galaxy.galaxynet.data.ipRepo.IPRepositoryImpl
-import com.galaxy.galaxynet.data.ipRepo.IpRepository
+import android.net.ConnectivityManager
+import androidx.room.Room
+import com.galaxy.galaxynet.data.TransactionRepo
+import com.galaxy.galaxynet.data.TransactionsRepoImpl
+import com.galaxy.galaxynet.data.ip.ipRepo.IPRepositoryImpl
+import com.galaxy.galaxynet.data.ip.ipRepo.IpOfflineDataSource
+import com.galaxy.galaxynet.data.ip.ipRepo.IpRepository
+import com.galaxy.galaxynet.data.ip.ipRepo.OfflineIpRepo
+import com.galaxy.galaxynet.data.local.AppDatabase
+import com.galaxy.galaxynet.data.local.IpDao
 import com.galaxy.galaxynet.data.tasksRepo.TasksRepository
 import com.galaxy.galaxynet.data.tasksRepo.TasksRepositoryImpl
 import com.galaxy.galaxynet.data.usersRepo.UsersRepository
@@ -49,7 +57,41 @@ class AppModule {
     }
 
     @Provides
-    fun provideIpRepo(firebaseFirestore: FirebaseFirestore): IpRepository {
-        return IPRepositoryImpl(firebaseFirestore)
+    fun provideIpRepo(
+        firebaseFirestore: FirebaseFirestore,
+        offlineIpRepo: OfflineIpRepo,
+        connectivityManager: ConnectivityManager
+    ): IpRepository {
+        return IPRepositoryImpl(firebaseFirestore , offlineIpRepo, connectivityManager)
+    }
+    @Provides
+    fun provideTransactionRepo(firebaseFirestore: FirebaseFirestore): TransactionRepo{
+        return TransactionsRepoImpl(firebaseFirestore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppDatabase( @ApplicationContext appContext: Context): AppDatabase{
+        return Room.databaseBuilder(
+            appContext,
+            AppDatabase::class.java,
+            "galaxy.db"
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideIpDao(appDatabase: AppDatabase): IpDao = appDatabase.ipDao()
+
+    @Provides
+    @Singleton
+    fun provideConnectivityManager(@ApplicationContext context: Context): ConnectivityManager {
+        return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    }
+
+    @Provides
+    @Singleton
+    fun provideOfflineIpRepo(ipDao: IpDao): OfflineIpRepo{
+        return IpOfflineDataSource(ipDao)
     }
 }

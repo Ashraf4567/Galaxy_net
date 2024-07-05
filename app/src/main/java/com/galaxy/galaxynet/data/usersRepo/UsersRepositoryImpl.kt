@@ -48,6 +48,7 @@ class UsersRepositoryImpl @Inject constructor(
     override suspend fun getAllUsers(): List<User> {
         try {
             val querySnapshot = usersCollection.get().await()
+            Log.d("getAllUsers", "QuerySnapshot: ${querySnapshot.toObjects(User::class.java)}")
             return querySnapshot.toObjects(User::class.java)
         } catch (e: FirebaseFirestoreException) {
             Log.e("getAllUsers", "FirebaseFirestoreException: ${e.message}", e)
@@ -69,12 +70,60 @@ class UsersRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteUser(userId: String): Result<Unit> {
+    override suspend fun updateUserPoints(userId: String, delta: Int): Result<Unit> {
         return try {
-            usersCollection.document(userId).delete().await()
-            // Consider deleting associated tokens as well
+            // Get the user document from Firestore
+            val userDocument = usersCollection.document(userId).get().await()
+
+            // Convert the document snapshot to a User object
+            val user = userDocument.toObject(User::class.java)
+
+            // Check if the user document exists
+            if (user != null) {
+                // Calculate the updated points by adding the delta
+                val updatedPoints = user.points?.plus(delta)
+
+                // Ensure the points are not negative
+                if (updatedPoints?:0 >= 0) {
+                    // Create a map with the updated points
+                    val updatedData = mapOf(
+                        "points" to updatedPoints
+                    )
+
+                    // Update the user document with the new points
+                    usersCollection.document(userId).update(updatedData).await()
+
+                    Result.success(Unit)
+                } else {
+                    // Return failure if the points would become negative
+                    throw Exception("Points cannot be negative")
+                }
+            } else {
+                // User document not found
+                Result.failure(Exception("User not found"))
+            }
+        } catch (exception: Exception) {
+            Result.failure(exception)
+        }
+    }
+
+
+    override suspend fun disableUser(userId: String): Result<Unit> {
+        return try {
+            val user = usersCollection.document(userId)
+            user.update("active" , false).await()
              tokensCollection.document(userId).delete().await()
 
+            Result.success(Unit)
+        } catch (exception: Exception) {
+            Result.failure(exception)
+        }
+    }
+
+    override suspend fun activeUser(userId: String): Result<Unit> {
+        return try {
+            val user = usersCollection.document(userId)
+            user.update("active", true).await()
             Result.success(Unit)
         } catch (exception: Exception) {
             Result.failure(exception)

@@ -1,14 +1,19 @@
 package com.galaxy.galaxynet
 
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.WRITE_EXTERNAL_STORAGE
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -27,6 +32,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+    private val REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 1
     private lateinit var binding: ActivityMainBinding
     private val viewModel: AuthViewModel by viewModels()
     private val requestPermissionLauncher = registerForActivityResult(
@@ -43,9 +49,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         FirebaseMessaging.getInstance().subscribeToTopic(com.galaxy.util.Constants.TOPIC)
-
+        requestPermissions()
         Firebase.firestore.firestoreSettings = firestoreSettings {
             isPersistenceEnabled = true
             setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED)
@@ -107,7 +112,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
     private fun handleBottomNavigation(itemId: Int, isManager: Boolean) {
         when (itemId) {
             R.id.profileFragment -> {
@@ -145,6 +149,14 @@ class MainActivity : AppCompatActivity() {
             binding.addTaskBtn.visibility = View.GONE
         }
     }
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE),
+            REQUEST_CODE_WRITE_EXTERNAL_STORAGE
+        )
+    }
+
 
     private fun askNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

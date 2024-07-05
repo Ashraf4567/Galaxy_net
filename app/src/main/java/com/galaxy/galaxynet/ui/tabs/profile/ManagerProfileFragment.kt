@@ -27,7 +27,8 @@ class ManagerProfileFragment : Fragment() {
             "قائمه الموظفين",
             "اضافه حساب",
             "اضافه نوع جهاز",
-            "احصائيات الاجهزه"
+            "احصائيات الاجهزه",
+            "سجل النقاط"
         )
     private val sectionsAdapter = ManagerSectionsAdapter(sectionsList)
 
@@ -61,7 +62,8 @@ class ManagerProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_managerProfileFragment_to_loginFragment)
         }
         binding.icSendAlert.setOnClickListener {
-            findNavController().navigate(R.id.action_managerProfileFragment_to_sendNotificationFragment)
+//            findNavController().navigate(R.id.action_managerProfileFragment_to_sendNotificationFragment)
+            Toast.makeText(requireActivity() , "تم ايقاف ارسال الاشعارات مؤقتا" , Toast.LENGTH_LONG).show()
         }
     }
 
@@ -88,6 +90,9 @@ class ManagerProfileFragment : Fragment() {
 
             "حسابي" -> {
                 findNavController().navigate(R.id.action_managerProfileFragment_to_profileFragment)
+            }
+            "سجل النقاط" ->{
+                findNavController().navigate(R.id.action_managerProfileFragment_to_transactionsHistoryFragment)
             }
 
         }

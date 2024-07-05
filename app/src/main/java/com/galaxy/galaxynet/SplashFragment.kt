@@ -76,7 +76,7 @@ class SplashFragment : Fragment() {
         findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
     }
 
-    fun createToken() {
+    private fun createToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener {
             if (it.isSuccessful) {
                 val token = it.result

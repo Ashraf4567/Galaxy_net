@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/deleteAccount"
-        android:title="حذف الحساب"
-        android:icon="@drawable/ic_delete"
-        />
+
     <item
         android:id="@+id/edit_points"
         android:title="تعديل النقاط"
         android:icon="@drawable/ic_edit"
+        />
+
+    <item
+        android:id="@+id/activeAccount"
+        android:title="تفعيل الحساب"
+        android:icon="@drawable/active_account"
+        />
+
+    <item
+        android:id="@+id/disableAccount"
+        android:title="ايقاف الحساب"
+        android:icon="@drawable/disabled_account"
         />
 
 </menu>

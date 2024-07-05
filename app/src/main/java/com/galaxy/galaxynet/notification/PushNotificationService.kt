@@ -1,6 +1,7 @@
 package com.galaxy.galaxynet.notification
 
 import android.util.Log
+import com.galaxy.util.Constants.Companion.CONTENT_TYPE
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -8,9 +9,9 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 
 object PushNotificationService {
-    suspend fun sendNotificationToDevice(deviceToken: String, title: String, message: String) {
+    fun sendNotificationToDevice(deviceToken: String, title: String, message: String) {
         val url = "https://fcm.googleapis.com/fcm/send"
-        val mediaType = com.galaxy.util.Constants.CONTENT_TYPE.toMediaType()
+        val mediaType = CONTENT_TYPE.toMediaType()
 
         val json = """
         {
@@ -26,7 +27,7 @@ object PushNotificationService {
         val request = Request.Builder()
             .url(url)
             .addHeader("Authorization", "Key=${com.galaxy.util.Constants.SERVER_KEY}")
-            .addHeader("Content-Type", com.galaxy.util.Constants.CONTENT_TYPE)
+            .addHeader("Content-Type", CONTENT_TYPE)
             .post(requestBody)
             .build()
 
@@ -44,3 +45,4 @@ object PushNotificationService {
         })
     }
 }
+
