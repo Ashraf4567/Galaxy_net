@@ -1,19 +1,20 @@
 package com.galaxy.galaxynet.data.ip.ipRepo
 
-import android.net.ConnectivityManager
 import android.util.Log
 import com.galaxy.galaxynet.model.DeviceType
 import com.galaxy.galaxynet.model.Ip
+import com.galaxy.util.Resource
 import com.galaxy.util.TransactionResult
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class IPRepositoryImpl @Inject constructor(
     val firestore: FirebaseFirestore,
-    val offlineDataSource: OfflineIpRepo,
-    val connectivityManager: ConnectivityManager
 ) : IpRepository {
 
     private val deviceTypeCollection = firestore.collection(DeviceType.DEVICE_TYPE_COLLECTION_NAME)
@@ -233,24 +234,28 @@ class IPRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getMainIPs():Flow<Resource<List<Ip>>> = callbackFlow {
+        trySend(Resource.Loading())
+        val mainIPsQuery = ipsCollection
+            .whereEqualTo("parentIp", null)
+            .orderBy("date", Query.Direction.DESCENDING)
 
-    override suspend fun getMainIPs(): List<Ip> {
-        return try {
-            val mainIPsQuery = ipsCollection.whereEqualTo("parentIp", null)
-            val mainIPsSnapshot = mainIPsQuery
-                .orderBy("date", Query.Direction.DESCENDING)
-                .get().await()
-
-            val mainIPs = mutableListOf<Ip>()
-            for (document in mainIPsSnapshot.documents) {
-                val ip = document.toObject(Ip::class.java)!!
-                mainIPs.add(ip)
+        val listener = mainIPsQuery.addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                trySend(Resource.Error(error.message.toString()))
+                return@addSnapshotListener
             }
-
-            mainIPs
-        } catch (e: Exception) {
-            Log.e("Get main IPs", "Error fetching main IPs: $e")
-            emptyList() // Return an empty list on error
+            if (snapshot != null) {
+                val ips = snapshot.documents.mapNotNull { document ->
+                    document.toObject(Ip::class.java)
+                }
+                trySend(Resource.Success(ips))
+            }else{
+                trySend(Resource.Error("snapshot is null"))
+            }
+        }
+        awaitClose {
+            listener.remove()
         }
     }
 
@@ -270,22 +275,27 @@ class IPRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSubListIPs(parentIp: String): List<Ip> {
-        return try {
-            val subListQuery = ipsCollection.whereEqualTo("parentIp", parentIp)
-            val subListSnapshot = subListQuery.get().await()
+    override suspend fun getSubListIPs(parentIp: String): Flow<Resource<List<Ip>>> = callbackFlow {
+        trySend(Resource.Loading())
+        val subListQuery = ipsCollection.whereEqualTo("parentIp", parentIp)
+        val listener = subListQuery
+            .orderBy("date", Query.Direction.DESCENDING)
+            .addSnapshotListener{ snapshot, error ->
+                if (error != null) {
+                    trySend(Resource.Error(error.message.toString()))
+                    return@addSnapshotListener
+                }
+                if (snapshot != null) {
+                    val ips = snapshot.documents.mapNotNull { document ->
+                        document.toObject(Ip::class.java)
+                    }
+                    trySend(Resource.Success(ips))
+                }
 
-            val subListIPs = mutableListOf<Ip>()
-            for (document in subListSnapshot.documents) {
-                val ip = document.toObject(Ip::class.java)!!
-                subListIPs.add(ip)
             }
+        awaitClose{listener.remove()}
 
-            subListIPs
-        } catch (e: Exception) {
-            Log.e("Get sub list IPs", "Error fetching sub list IPs: $e")
-            emptyList()
-        }
+
     }
 
     override suspend fun getSpecificIp(id: String): Ip {

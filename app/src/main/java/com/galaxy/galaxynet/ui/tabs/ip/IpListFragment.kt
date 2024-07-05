@@ -126,14 +126,6 @@ class IpListFragment : Fragment() {
                     positiveText = "حذف",
                     onPositiveClick = { _, _ ->
                         viewModel.deleteIp(ip, ip.value!!)
-                        if (clickedIpStack.empty()) {
-                            viewModel.getMainIPList()
-                            binding.headerText.text = "القائمه الرئيسيه"
-                            binding.backBtn.visibility = View.GONE
-                        } else {
-                            viewModel.getSubIpList(clickedIpStack.peek().value.toString())
-                        }
-
                     }
                 )
             } else {
@@ -147,7 +139,6 @@ class IpListFragment : Fragment() {
         adapter.onEditIpClickListener = IPListAdapter.OnIpClickListener { ip, position ->
             val intent = Intent(requireActivity(), EditIPActivity::class.java).apply {
                 putExtra(Constants.IP_ID, ip.id)
-                Log.d("test id", ip.id.toString())
                 startActivity(this)
             }
 
@@ -193,10 +184,6 @@ class IpListFragment : Fragment() {
             }
 
 
-        }
-        binding.printerBtn.setOnClickListener {
-            val filePath = File(context?.getExternalFilesDir(null), "ip_list.pdf")
-            viewModel.createPdfFromIpListHTML("ip_list.pdf")
         }
 
     }

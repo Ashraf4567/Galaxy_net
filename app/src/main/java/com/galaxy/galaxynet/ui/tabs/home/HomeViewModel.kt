@@ -8,13 +8,14 @@ import com.galaxy.galaxynet.data.tasksRepo.TasksRepository
 import com.galaxy.galaxynet.model.TaskCompletionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     val sessionManager: SessionManager,
-    val taskRepository: TasksRepository
+    private val taskRepository: TasksRepository
 ): ViewModel() {
 
     private val _numOfCompletedTasks = MutableLiveData<Int?>()
@@ -33,17 +34,16 @@ class HomeViewModel @Inject constructor(
         bindTasksNumbers()
     }
 
-    private fun bindTasksNumbers(){
+    private fun bindTasksNumbers() {
         viewModelScope.launch(Dispatchers.IO) {
-            val numOfCompletedTasks = taskRepository.getTasksByCompletionState(TaskCompletionState.COMPLETED.state)?.size
-            val numOfAllTasks = taskRepository.getTaskCount()
-            val numOfInProcessTasks = taskRepository.getTasksByCompletionState(TaskCompletionState.IN_PROGRESS.state)?.size
-            val numOfNewTasks = taskRepository.getTasksByCompletionState(TaskCompletionState.NEW.state)?.size
+            val numOfAllTasks = async { taskRepository.getTaskCount().collect { _numOfAllTasks.postValue(it.data) } }
+            val numOfCompletedTasks = async { taskRepository.getTasksByCompletionState(TaskCompletionState.COMPLETED.state)?.size }
+            val numOfInProcessTasks = async { taskRepository.getTasksByCompletionState(TaskCompletionState.IN_PROGRESS.state)?.size }
+            val numOfNewTasks = async { taskRepository.getTasksByCompletionState(TaskCompletionState.NEW.state)?.size }
 
-            _numOfCompletedTasks.postValue(numOfCompletedTasks)
-            _numOfInProcessTasks.postValue(numOfInProcessTasks)
-            _numOfNewTasks.postValue(numOfNewTasks)
-            _numOfAllTasks.postValue(numOfAllTasks)
+            _numOfCompletedTasks.postValue(numOfCompletedTasks.await())
+            _numOfInProcessTasks.postValue(numOfInProcessTasks.await())
+            _numOfNewTasks.postValue(numOfNewTasks.await())
         }
     }
 }

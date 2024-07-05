@@ -2,6 +2,7 @@ package com.galaxy.galaxynet.data.tasksRepo
 
 import com.galaxy.galaxynet.model.Task
 import com.galaxy.util.AddTaskResult
+import com.galaxy.util.Resource
 import com.galaxy.util.TransactionResult
 import kotlinx.coroutines.flow.Flow
 
@@ -23,7 +24,7 @@ interface TasksRepository {
     suspend fun getAllTasksByCategory(category: String): Flow<List<Task>>
     suspend fun getTasksByCompletionState(state: String): List<Task?>?
     suspend fun getCurrentUserTasks(userName: String): List<Task?>?
-    suspend fun getTaskCount(): Int
+    fun getTaskCount(): Flow<Resource<Int>>
 
     suspend fun getTaskById(id: String): Task
 }

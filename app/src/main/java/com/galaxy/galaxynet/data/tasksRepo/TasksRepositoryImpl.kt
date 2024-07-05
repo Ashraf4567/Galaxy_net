@@ -6,6 +6,7 @@ import com.galaxy.galaxynet.model.TaskAcceptanceStatus
 import com.galaxy.galaxynet.model.TaskCompletionState
 import com.galaxy.galaxynet.model.User
 import com.galaxy.util.AddTaskResult
+import com.galaxy.util.Resource
 import com.galaxy.util.TransactionResult
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -209,11 +210,20 @@ class TasksRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getTaskCount(): Int {
+    override fun getTaskCount(): Flow<Resource<Int>> = callbackFlow{
         val querySnapshot = firestore.collection(Task.COLLECTION_NAME)
-            .get()
-            .await()
-        return querySnapshot.size()
+        val query = querySnapshot.whereEqualTo("taskAcceptanceStatus", TaskAcceptanceStatus.ACCEPTED.state)
+        val listener = query.addSnapshotListener { value, error ->
+            if (error != null) {
+                trySend(Resource.Error(error.message.toString()))
+                return@addSnapshotListener
+            }
+            val taskCount = value?.documents?.size
+            trySend(Resource.Success(taskCount))
+        }
+
+        awaitClose { listener.remove() }
+
     }
 
     override suspend fun getCurrentUserTasks(userName: String): List<Task?>? {

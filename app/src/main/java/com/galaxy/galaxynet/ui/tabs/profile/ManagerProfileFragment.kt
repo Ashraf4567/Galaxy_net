@@ -62,8 +62,7 @@ class ManagerProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_managerProfileFragment_to_loginFragment)
         }
         binding.icSendAlert.setOnClickListener {
-//            findNavController().navigate(R.id.action_managerProfileFragment_to_sendNotificationFragment)
-            Toast.makeText(requireActivity() , "تم ايقاف ارسال الاشعارات مؤقتا" , Toast.LENGTH_LONG).show()
+            findNavController().navigate(R.id.action_managerProfileFragment_to_sendNotificationFragment)
         }
     }
 

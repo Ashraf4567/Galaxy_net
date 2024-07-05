@@ -10,14 +10,12 @@ import androidx.navigation.fragment.findNavController
 import com.galaxy.galaxynet.R
 import com.galaxy.galaxynet.databinding.FragmentHomeBinding
 import com.galaxy.galaxynet.model.TaskCompletionState
-import com.galaxy.galaxynet.ui.auth.AuthViewModel
 import com.galaxy.util.Constants
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
     lateinit var binding: FragmentHomeBinding
-    private val adapter = AllTasksAdapter(null)
     private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreateView(

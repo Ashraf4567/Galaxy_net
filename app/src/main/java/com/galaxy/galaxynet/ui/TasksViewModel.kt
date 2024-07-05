@@ -150,16 +150,16 @@ class TasksViewModel @Inject constructor(
                 when (result) {
                     is TransactionResult.Success -> {
                         messageLiveData.postValue("تم التعديل علي المهمه والاضافه بنجاح")
-//                        val tokens = usersRepository.getAllTokens()
-//                        tokens.forEach {
-//                            if (!it.id.equals(auth.currentUser?.uid))
-//                                PushNotificationService
-//                                    .sendNotificationToDevice(
-//                                        it.tokenValue ?: "",
-//                                        "مهمه جديده",
-//                                        " تم تعديل مهمه جديده بواسطه ${sessionManager.getUserData()?.name}"
-//                                    )
-//                        }
+                        val tokens = usersRepository.getAllTokens()
+                        tokens.forEach {
+                            if (!it.id.equals(auth.currentUser?.uid))
+                                PushNotificationService
+                                    .sendNotificationToDevice(
+                                        it.tokenValue ?: "",
+                                        "مهمه جديده",
+                                        " تم تعديل مهمه جديده بواسطه ${sessionManager.getUserData()?.name}"
+                                    )
+                        }
                         uIstate.postValue(UiState.SUCCESS)
                         Log.d("test Update task", "task updated successfully")
                     }
@@ -247,16 +247,16 @@ class TasksViewModel @Inject constructor(
                 when (result) {
                     is TransactionResult.Success -> {
                         messageLiveData.postValue("تم قبول المهمه بنجاح")
-//                        val tokens = usersRepository.getAllTokens()
-//                        tokens.forEach {
-//                            PushNotificationService
-//                                .sendNotificationToDevice(
-//                                    it.tokenValue ?: "",
-//                                    "قبول طلب",
-//                                    " تم قبول طلب اضافه مهمه بواسطه ${sessionManager.getUserData()?.name}"
-//                                )
-//
-//                        }
+                        val tokens = usersRepository.getAllTokens()
+                        tokens.forEach {
+                            PushNotificationService
+                                .sendNotificationToDevice(
+                                    it.tokenValue ?: "",
+                                    "قبول طلب",
+                                    " تم قبول طلب اضافه مهمه بواسطه ${sessionManager.getUserData()?.name}"
+                                )
+
+                        }
                         uIstate.postValue(UiState.SUCCESS)
                     }
 
@@ -347,14 +347,14 @@ class TasksViewModel @Inject constructor(
                     is TransactionResult.Success -> {
                         messageLiveData.postValue("تم اكمال المهمه")
                         val tokens = usersRepository.getAllTokens()
-//                        tokens.forEach {
-//                            PushNotificationService
-//                                .sendNotificationToDevice(
-//                                    it.tokenValue ?: "",
-//                                    "اكمال مهمة ${task.creatorName}",
-//                                    " تم اكمال مهمه جديده بواسطه ${sessionManager.getUserData()?.name}"
-//                                )
-//                        }
+                        tokens.forEach {
+                            PushNotificationService
+                                .sendNotificationToDevice(
+                                    it.tokenValue ?: "",
+                                    "اكمال مهمة ${task.creatorName}",
+                                    " تم اكمال مهمه جديده بواسطه ${sessionManager.getUserData()?.name}"
+                                )
+                        }
                         uIstate.postValue(UiState.SUCCESS)
                     }
                 }

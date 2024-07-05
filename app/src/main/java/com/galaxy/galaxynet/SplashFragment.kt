@@ -54,16 +54,6 @@ class SplashFragment : Fragment() {
         }
     }
 
-    private fun checkUserAuthentication() {
-
-
-        if (viewModel.sessionManager.getUserData()?.name == null) {
-            startLoginFragment()
-        } else {
-            startHome()
-        }
-    }
-
     private fun startHome() {
         createToken()
         findNavController().navigate(R.id.action_splashFragment_to_homeFragment)

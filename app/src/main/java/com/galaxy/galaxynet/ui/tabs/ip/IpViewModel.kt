@@ -13,6 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.galaxy.galaxynet.data.ip.ipRepo.IpRepository
 import com.galaxy.galaxynet.data.local.SessionManager
 import com.galaxy.galaxynet.model.Ip
+import com.galaxy.util.Resource
 import com.galaxy.util.SingleLiveEvent
 import com.galaxy.util.TransactionResult
 import com.galaxy.util.UiState
@@ -163,13 +164,15 @@ class IpViewModel @Inject constructor(
     fun getMainIPList() {
         uiState.postValue(UiState.LOADING)
         viewModelScope.launch {
-            try {
-                val result = ipsRepository.getMainIPs()
-                ipList.postValue(result.toMutableList())
-                uiState.postValue(UiState.SUCCESS)
-            } catch (e: Exception) {
-                uiState.postValue(UiState.ERROR)
-                Log.e("test get main ip list", e.message.toString())
+            ipsRepository.getMainIPs().collect{result ->
+                when(result){
+                    is Resource.Error -> {uiState.postValue(UiState.ERROR)}
+                    is Resource.Loading -> {uiState.postValue(UiState.LOADING)}
+                    is Resource.Success -> {
+                        ipList.postValue(result.data?.toMutableList())
+                        uiState.postValue(UiState.SUCCESS)
+                    }
+                }
             }
         }
 
@@ -294,11 +297,10 @@ class IpViewModel @Inject constructor(
         table.addCell("Device Type")
         table.addCell("Keyword")
 
-        val testArabic = Paragraph("هذا نص عربي")
         ipList.value?.forEach {
             it?.let {
                 table.addCell(Paragraph(it.value).setFont(arabicFont).setTextAlignment(TextAlignment.RIGHT))
-                table.addCell(testArabic.add(Text(it.deviceType)).setFont(arabicFont).setTextAlignment(TextAlignment.RIGHT))
+                table.addCell(Paragraph(it.deviceType).setFont(arabicFont).setTextAlignment(TextAlignment.RIGHT))
                 table.addCell(Paragraph(it.keyword).setFont(arabicFont).setTextAlignment(TextAlignment.RIGHT))
             }
 
@@ -316,17 +318,18 @@ class IpViewModel @Inject constructor(
 
 
     fun getSubIpList(parentIP: String) {
-        uiState.postValue(UiState.LOADING)
-        viewModelScope.launch {
-            try {
-                val result = ipsRepository.getSubListIPs(parentIP)
-                ipList.postValue(result.toMutableList())
-                uiState.postValue(UiState.SUCCESS)
-            } catch (e: Exception) {
-                uiState.postValue(UiState.ERROR)
-                Log.e("test get sub ip list", e.message.toString())
-            }
 
+        viewModelScope.launch {
+            ipsRepository.getSubListIPs(parentIP).collect{ result ->
+                when(result){
+                    is Resource.Error -> {uiState.postValue(UiState.ERROR)}
+                    is Resource.Loading -> {uiState.postValue(UiState.LOADING)}
+                    is Resource.Success -> {
+                        ipList.postValue(result.data?.toMutableList())
+                        uiState.postValue(UiState.SUCCESS)
+                    }
+                }
+            }
         }
 
     }
