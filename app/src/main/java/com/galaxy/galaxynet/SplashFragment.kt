@@ -62,7 +62,6 @@ class SplashFragment : Fragment() {
     private fun startLoginFragment() {
         viewModel.sessionManager.logout()
         auth.signOut()
-        Log.e("test saved local", viewModel.sessionManager.getUserData()?.name.toString())
         findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
     }
 
@@ -70,7 +69,6 @@ class SplashFragment : Fragment() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener {
             if (it.isSuccessful) {
                 val token = it.result
-                Log.d("token value", token.toString())
                 viewModel.saveToken(token.toString())
             }
 

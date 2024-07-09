@@ -154,8 +154,8 @@ class AuthViewModel @Inject constructor(
                 }
                 val result = usersRepository.getAllUsers()
                 val currentUser = result.find { it.id == userId }
-                Log.d("test get Current user", currentUser.toString())
                 if (currentUser?.active == true) {
+                    refreshUserData(currentUser)
                     isExist.postValue(true)
                 } else {
                     isExist.postValue(false)
@@ -165,6 +165,10 @@ class AuthViewModel @Inject constructor(
 
             }
         }
+    }
+
+    private fun refreshUserData(currentUser: User) {
+        sessionManager.saveUserData(currentUser)
     }
 
 

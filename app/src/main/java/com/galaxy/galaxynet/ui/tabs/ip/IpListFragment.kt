@@ -153,7 +153,9 @@ class IpListFragment : Fragment() {
             }
 
             override fun onQueryTextChange(query: String?): Boolean {
-                Log.d("test search", query ?: "null")
+                if (viewModel.sessionManager.getUserData()?.haveAccessToIpList == false){
+                    return false
+                }
                 if (query?.isNullOrBlank() == true) {
                     viewModel.getMainIPList()
                 } else {

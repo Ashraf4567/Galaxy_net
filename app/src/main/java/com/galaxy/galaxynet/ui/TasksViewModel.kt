@@ -82,7 +82,6 @@ class TasksViewModel @Inject constructor(
                 Log.e("test task id from vm", id)
             } catch (e: Exception) {
                 uIstate.postValue(UiState.ERROR)
-                Log.e("test get task object", e.message.toString())
             }
         }
     }
@@ -126,7 +125,6 @@ class TasksViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 uIstate.postValue(UiState.ERROR)
-                Log.d("test get Tasks", e.localizedMessage ?: "something went wrong")
             }
 
         }
@@ -167,12 +165,10 @@ class TasksViewModel @Inject constructor(
                     is TransactionResult.Failure -> {
                         val exception = result.exception?.localizedMessage
                         uIstate.postValue(UiState.ERROR)
-                        Log.d("test Update task", exception ?: "")
                     }
                 }
             } catch (e: Exception) {
                 uIstate.postValue(UiState.ERROR)
-                Log.d("test Update task", e.localizedMessage ?: "something went wrong")
             }
         }
     }
@@ -186,7 +182,6 @@ class TasksViewModel @Inject constructor(
                 uIstate.postValue(UiState.SUCCESS)
             } catch (e: Exception) {
                 uIstate.postValue(UiState.ERROR)
-                Log.d("test get Tasks", e.localizedMessage ?: "something went wrong")
             }
 
         }
@@ -199,7 +194,6 @@ class TasksViewModel @Inject constructor(
             tasksRepository.getAllTasksByCategory(category)
                 .catch { e ->
                     uIstate.postValue(UiState.ERROR)
-                    Log.e("test get Tasks", e.localizedMessage ?: "Something went wrong")
                 }
                 .collect { result ->
                     allTasksLiveData.postValue(result.toMutableList())
@@ -217,7 +211,6 @@ class TasksViewModel @Inject constructor(
                 uIstate.postValue(UiState.SUCCESS)
             } catch (e: Exception) {
                 uIstate.postValue(UiState.ERROR)
-                Log.d("test get Tasks", e.localizedMessage ?: "something went wrong")
             }
 
         }
@@ -233,7 +226,6 @@ class TasksViewModel @Inject constructor(
                 uIstate.postValue(UiState.SUCCESS)
             } catch (e: Exception) {
                 uIstate.postValue(UiState.ERROR)
-                Log.d("test get Tasks", e.localizedMessage ?: "something went wrong")
             }
 
         }
@@ -269,7 +261,6 @@ class TasksViewModel @Inject constructor(
             } catch (e: Exception) {
                 uIstate.postValue(UiState.ERROR)
                 messageLiveData.postValue("حدث خطأ ما حاول مره اخري")
-                Log.d("test Update task", e.localizedMessage ?: "something went wrong")
             }
         }
     }
@@ -296,7 +287,6 @@ class TasksViewModel @Inject constructor(
             } catch (e: Exception) {
                 uIstate.postValue(UiState.ERROR)
                 messageLiveData.postValue("حدث خطأ ما حاول مره اخري")
-                Log.d("test Update task", e.localizedMessage ?: "something went wrong")
             }
         }
     }
@@ -328,7 +318,6 @@ class TasksViewModel @Inject constructor(
             } catch (e: Exception) {
                 uIstate.postValue(UiState.ERROR)
                 messageLiveData.postValue("حدث خطأ ما حاول مره اخري")
-                Log.d("test Update task", e.localizedMessage ?: "something went wrong")
             }
         }
     }
@@ -362,7 +351,6 @@ class TasksViewModel @Inject constructor(
             } catch (e: Exception) {
                 uIstate.postValue(UiState.ERROR)
                 messageLiveData.postValue("حدث خطأ ما حاول مره اخري")
-                Log.d("test Update task", e.localizedMessage ?: "something went wrong")
             }
         }
     }
