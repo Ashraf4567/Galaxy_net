@@ -162,7 +162,7 @@ class TasksRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAllTasksByCategory(category: String): Flow<List<Task>> = callbackFlow {
+    override fun getAllTasksByCategory(category: String): Flow<List<Task>> = callbackFlow {
         val listenerRegistration: ListenerRegistration = tasksCollection
             .whereEqualTo("taskAcceptanceStatus", TaskAcceptanceStatus.ACCEPTED.state)
             .whereEqualTo("taskCategory", category)

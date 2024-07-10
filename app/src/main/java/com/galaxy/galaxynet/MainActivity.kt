@@ -15,6 +15,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -113,17 +114,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleBottomNavigation(itemId: Int, isManager: Boolean) {
+
+        val navOptions = NavOptions.Builder()
+            .setPopUpTo(R.id.homeFragment, false)
+            .build()
         when (itemId) {
             R.id.profileFragment -> {
 
                 val destinationId =
                     if (isManager) R.id.managerProfileFragment else R.id.profileFragment
-                findNavController(R.id.container).navigate(destinationId)
+                findNavController(R.id.container).navigate(destinationId ,null, navOptions = navOptions)
 
             }
 
             else -> {
-                findNavController(R.id.container).navigate(itemId)
+                findNavController(R.id.container).navigate(itemId , null , navOptions)
             }
         }
     }

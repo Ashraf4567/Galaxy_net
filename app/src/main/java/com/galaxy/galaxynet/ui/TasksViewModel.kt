@@ -110,7 +110,7 @@ class TasksViewModel @Inject constructor(
                                 .sendNotificationToDevice(
                                     it.tokenValue ?: "",
                                     "مهمه جديده",
-                                    " اضافه مهمه جديده بواسطه ${sessionManager.getUserData()?.name}"
+                                    " اضافه مهمه جديده بواسطه ${sessionManager.getUserData()?.name}\n${task.title}"
                                 )
                         }
                         uIstate.postValue(UiState.SUCCESS)

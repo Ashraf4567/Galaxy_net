@@ -3,6 +3,7 @@ package com.galaxy.galaxynet.data.usersRepo
 import com.galaxy.galaxynet.model.Token
 import com.galaxy.galaxynet.model.User
 import com.galaxy.util.UserResult
+import kotlinx.coroutines.flow.Flow
 
 
 interface UsersRepository {

@@ -57,7 +57,21 @@ class ControlPanelViewModel @Inject constructor(
         }
     }
 
+    fun getTransactionsByUserId(userId: String){
+        uiState.postValue(UiState.LOADING)
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val result = transactionRepository.getTransactionsById(userId)
+                transactionList.postValue(result)
+                uiState.postValue(UiState.SUCCESS)
 
+
+            }catch (e: Exception){
+                Log.e("test get transactions by user id", e.message.toString())
+                uiState.postValue(UiState.ERROR)
+            }
+        }
+    }
 
     fun sendAlert() {
         if (!validateSendNotificationForm()) return

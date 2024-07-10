@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.galaxy.galaxynet.R
 import com.galaxy.galaxynet.databinding.FragmentEmployeesListBinding
 import com.galaxy.galaxynet.model.User
 import com.galaxy.galaxynet.ui.controlPanel.MenuItem
+import com.galaxy.util.Constants.Companion.EMPLOYEE_NAME_KEY
+import com.galaxy.util.Constants.Companion.USER_ID_KEY
 import com.galaxy.util.UiState
 import com.galaxy.util.showConfirmationDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -79,7 +82,10 @@ class EmployeesListFragment : Fragment(), EmployeesAdapter.OnEmployeeClickListen
     }
 
     override fun onEmployeeClick(employee: User?) {
-        Log.d("EmployeesListFragment", "onEmployeeClick called")
+        val bundle = Bundle()
+        bundle.putString(USER_ID_KEY, employee?.id)
+        bundle.putString(EMPLOYEE_NAME_KEY , employee?.name)
+        findNavController().navigate(R.id.action_employeesListFragment_to_transactionsHistoryFragment , bundle)
     }
 
     override fun onOptionSelected(user: User, menuItem: MenuItem) {
@@ -101,7 +107,6 @@ class EmployeesListFragment : Fragment(), EmployeesAdapter.OnEmployeeClickListen
                     negativeText = "الغاء",
                     onPositiveClick = { _, _ ->
                         viewModel.activeAccount(user.id?:"")
-                        viewModel.getAllEmployees()
                     }
                 )
 
@@ -114,7 +119,6 @@ class EmployeesListFragment : Fragment(), EmployeesAdapter.OnEmployeeClickListen
                     negativeText = "الغاء",
                     onPositiveClick = { _, _ ->
                         viewModel.deleteUser(user.id?:"")
-                        viewModel.getAllEmployees()
                     }
                 )
             }

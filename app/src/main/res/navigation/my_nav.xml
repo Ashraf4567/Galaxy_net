@@ -156,6 +156,9 @@
         <action
             android:id="@+id/action_employeesListFragment_to_editPointsFragment"
             app:destination="@id/editPointsFragment" />
+        <action
+            android:id="@+id/action_employeesListFragment_to_transactionsHistoryFragment"
+            app:destination="@id/transactionsHistoryFragment" />
     </fragment>
     <dialog
         android:id="@+id/addDeviceTypeFragment"
@@ -222,5 +225,15 @@
         android:id="@+id/transactionsHistoryFragment"
         android:name="com.galaxy.galaxynet.ui.controlPanel.trasactionHistory.TransactionsHistoryFragment"
         android:label="fragment_transactions_history"
-        tools:layout="@layout/fragment_transactions_history" />
+        tools:layout="@layout/fragment_transactions_history" >
+        <argument
+            android:name="userId"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="employeeName"
+            app:argType="string"
+            app:nullable="true" />
+
+    </fragment>
 </navigation>

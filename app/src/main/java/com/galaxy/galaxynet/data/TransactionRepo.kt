@@ -6,4 +6,5 @@ import com.galaxy.util.TransactionResult
 interface TransactionRepo {
     suspend fun addTransaction(transaction: TransactionHistory): TransactionResult
     suspend fun getAllTransactions(): List<TransactionHistory>
+    suspend fun getTransactionsById(id: String): List<TransactionHistory>
 }

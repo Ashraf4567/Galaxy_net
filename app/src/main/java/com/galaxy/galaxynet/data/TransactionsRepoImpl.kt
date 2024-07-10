@@ -11,10 +11,10 @@ import java.util.Date
 import javax.inject.Inject
 
 class TransactionsRepoImpl @Inject constructor(
-    private val firestore: FirebaseFirestore
+    firestore: FirebaseFirestore
 ): TransactionRepo {
 
-    private val collection = firestore.collection("transactions")
+    private val collection = firestore.collection(TransactionHistory.COLLECTION_NAME)
 
     override suspend fun addTransaction(transaction: TransactionHistory): TransactionResult {
         return try {
@@ -31,7 +31,6 @@ class TransactionsRepoImpl @Inject constructor(
             val snapshot = collection.get().await()
             snapshot .documents .forEach {
 
-                Log.d("getAllTransactions", ": ${snapshot .documents.size}")
                 val points=it.get("points") as Long
                 val x=
                     TransactionHistory(
@@ -40,15 +39,39 @@ class TransactionsRepoImpl @Inject constructor(
                         transactionType = it.get("transactionType") as String,
                         transactionDate = it.get("transactionDate") as String,
                         transactionNotes = it.get("transactionNotes") as String,
+                        employeeId = it.get("employeeId") as String
                     )
                 list.add(x)
             }
 
-            Log.d("getAllTransactions", ": ${list}")
             list.toList()
 
         }catch (e: Exception) {
             emptyList()
+        }
+    }
+
+    override suspend fun getTransactionsById(id: String): List<TransactionHistory> {
+        try {
+            val list = mutableListOf<TransactionHistory>()
+            val snapshot = collection.whereEqualTo("employeeId", id).get().await()
+            snapshot .documents .forEach {
+                val points=it.get("points") as Long
+                val x=
+                    TransactionHistory(
+                        points = points.toInt(),
+                        employeeName = it.get("employeeName") as String,
+                        transactionType = it.get("transactionType") as String,
+                        transactionDate = it.get("transactionDate") as String,
+                        transactionNotes = it.get("transactionNotes") as String,
+                        employeeId = it.get("employeeId") as String
+                    )
+                list.add(x)
+
+            }
+            return list.toList()
+        } catch (e: Exception) {
+            throw e
         }
     }
 }

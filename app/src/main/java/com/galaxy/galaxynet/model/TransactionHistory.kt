@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter
 data class TransactionHistory(
     val points: Int,
     val employeeName: String,
+    val employeeId: String,
     val transactionDate: String = LocalDateTime.now()
         .format(DateTimeFormatter.ofPattern("yyyy-MM-dd h:mm a")),
     val transactionNotes: String,

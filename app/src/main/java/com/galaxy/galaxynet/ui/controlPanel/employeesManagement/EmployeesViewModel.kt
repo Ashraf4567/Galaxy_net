@@ -52,6 +52,7 @@ class EmployeesViewModel @Inject constructor(
             try {
                 val res = usersRepository.disableUser(id)
                 if (res.isSuccess){
+                    getAllEmployees()
                     uIstate.postValue(UiState.SUCCESS)
                     messageLiveData.postValue("تم ايقاف حساب الموظف بنجاح")
                 }
@@ -73,7 +74,8 @@ class EmployeesViewModel @Inject constructor(
             try {
                 val res = usersRepository.updateUserPoints(userId, points)
                 if (res.isSuccess){
-                    insertTransaction(points, transactionType, transactionNotes, employeeName)
+                    insertTransaction(points, transactionType, transactionNotes, employeeName , userId)
+                    getAllEmployees()
 
                 }
                 if (res.isFailure){
@@ -81,7 +83,6 @@ class EmployeesViewModel @Inject constructor(
                     messageLiveData.postValue("لايمكن ان تكون النقاط سالب")
                 }
             }catch (e: Exception){
-                Log.e("test edit points", e.message.toString())
                 if (e.message.equals("Points cannot be negative")){
                     messageLiveData.postValue("لايمكن ان تكون النقاط سالب")
                 }
@@ -94,7 +95,8 @@ class EmployeesViewModel @Inject constructor(
         points: Int,
         transactionType: String,
         transactionNotes: String,
-        employeeName: String
+        employeeName: String,
+        userId: String
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val res2 = transactionRepository.addTransaction(
@@ -102,7 +104,8 @@ class EmployeesViewModel @Inject constructor(
                     points = points,
                     transactionNotes = transactionNotes,
                     transactionType = transactionType,
-                    employeeName = employeeName
+                    employeeName = employeeName,
+                    employeeId = userId
                 )
             )
             when(res2){
@@ -133,7 +136,6 @@ class EmployeesViewModel @Inject constructor(
                 }
 
             }catch (e: Exception){
-                Log.e("test delete user", e.message.toString())
                 uIstate.postValue(UiState.ERROR)
             }
         }

@@ -28,6 +28,9 @@ class EmployeesAdapter(var employeesList: MutableList<User?>?) :
             if (employee?.active == false){
                 item.activeState.background = item.root.context.getDrawable(R.color.red)
             }
+            item.root.setOnClickListener {
+                listener.onEmployeeClick(employee)
+            }
         }
 
         private fun popMenu(v: View, user: User , onOptionSelected: OnEmployeeClickListener) {
